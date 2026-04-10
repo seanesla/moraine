@@ -1,0 +1,33 @@
+{
+  "event": "Dig Tsho GLOF, August 4, 1985",
+  "description": "Moraine dam collapse at Dig Tsho (Langmoche Valley, Khumbu). Destroyed Namche Small Hydropower Plant 11 km downstream, 14 bridges, caused 12 fatalities. Damage extended 50-60 km downstream.",
+  "sources": [
+    "Vuichard and Zimmermann 1987",
+    "Cenderelli and Wohl 2001"
+  ],
+  "lake": {
+    "name": "Dig Tsho",
+    "volume_m3": 5000000,
+    "notes": "Some sources estimate 6-10M m3; 5M is the conservative estimate from Vuichard and Zimmermann 1987"
+  },
+  "valley": {
+    "slope": 0.04,
+    "channel_width_m": 20,
+    "channel_depth_m": 4,
+    "manning_n": 0.10,
+    "notes": "Manning's n=0.10 reflects debris-laden GLOF flow conditions (published range 0.08-0.15 for GLOF debris flows in boulder-bed mountain streams). Higher than normal river flow (0.06-0.08)."
+  },
+  "observed": {
+    "velocity_mps_range": [4.0, 5.0],
+    "distance_to_hydropower_m": 11000,
+    "arrival_time_minutes_approx": 50,
+    "peak_discharge_m3s_range": [1500, 2500],
+    "total_damage_extent_km": 55,
+    "drainage_duration_hours": 4
+  },
+  "validation_targets": {
+    "velocity_mps": {"min": 3.0, "max": 6.0},
+    "arrival_time_min": {"min": 25, "max": 70},
+    "peak_discharge_m3s": {"min": 1000, "max": 3500}
+  }
+}
