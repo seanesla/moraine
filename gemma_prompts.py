@@ -87,6 +87,12 @@ ALWAYS include this disclaimer when presenting results:
 These are estimates from simplified models (Popov 1991, Huggel 2002, Manning's equation).
 Actual flood behavior depends on breach mechanism, debris content, channel changes,
 and other factors. Use for evacuation planning support. Follow official orders when available.
+
+FORMATTING RULES:
+- Use plain Markdown only. DO NOT use LaTeX math syntax like $m^3$ or $\\frac{...}{...}$.
+- For units with exponents, use Unicode superscripts: m³ (not m^3 or $m^3$), m² (not m^2), km/h, m/s.
+- For multiplication use × (not \\times). For degrees use °.
+- Tables, headings, bold, italic, bullet lists, and numbered lists are all fine.
 """
 
 
