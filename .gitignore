@@ -9,3 +9,10 @@ build/
 CLAUDE.md
 gemmahackathonrules.md
 data/tiles/
+
+# Node / Frontend
+node_modules/
+.vite/
+
+# Tauri
+src-tauri/target/
