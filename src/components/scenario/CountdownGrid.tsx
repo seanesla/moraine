@@ -11,11 +11,11 @@ export default function CountdownGrid({ villages }: CountdownGridProps) {
       <h3 className="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3">
         Village Arrival Times
       </h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="flex flex-wrap gap-3">
         {villages.map((village, i) => (
           <div
             key={village.name}
-            className="animate-fade-in-right"
+            className="animate-fade-in-right flex-1 min-w-[260px]"
             style={{ animationDelay: `${0.3 + i * 0.08}s` }}
           >
             <CountdownCard village={village} index={i} />

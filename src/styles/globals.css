@@ -9,13 +9,20 @@
   --color-border: #27272a;
   --color-border-hover: #3f3f46;
   --color-text-primary: #fafafa;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #52525b;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
   --color-primary: #00d4ff;
   --color-primary-hover: #33ddff;
   --color-danger: #ef4444;
   --color-warning: #f97316;
   --color-success: #22c55e;
+
+  /* Legacy chat aliases — keep until chat components are refactored */
+  --color-accent-cyan: #00d4ff;
+  --color-accent-blue: #60a5fa;
+  --color-bg-primary: #09090b;
+  --color-bg-secondary: #111113;
+  --color-bg-tertiary: #1a1a1f;
 
   --color-glass: rgba(17, 17, 19, 0.60);
   --color-glass-well: rgba(17, 17, 19, 0.38);
@@ -26,12 +33,6 @@
   --color-glow-danger: rgba(239, 68, 68, 0.5);
   --color-glow-warning: rgba(249, 115, 22, 0.5);
   --color-glow-success: rgba(34, 197, 94, 0.5);
-
-  --color-severity-extreme: #ef4444;
-  --color-severity-severe: #f97316;
-  --color-severity-high: #f59e0b;
-  --color-severity-moderate: #eab308;
-  --color-severity-low: #22c55e;
 
   --animate-border-flow: border-flow 4s linear infinite;
 }
@@ -88,13 +89,6 @@ body {
 .animate-fade-in-right { animation: fadeInRight 0.4s ease-out both; }
 .animate-scale-in     { animation: scaleIn 0.4s ease-out both; }
 
-/* ── Severity ── */
-.severity-extreme { background: linear-gradient(135deg, #b91c1c, #dc2626); }
-.severity-severe  { background: linear-gradient(135deg, #c2410c, #ea580c); }
-.severity-high    { background: linear-gradient(135deg, #d97706, #f59e0b); }
-.severity-moderate { background: linear-gradient(135deg, #ca8a04, #eab308); color: #1e293b; }
-.severity-low     { background: linear-gradient(135deg, #15803d, #22c55e); }
-
 /* ── Form inputs ── */
 input[type="number"], select {
   background: var(--color-background);
@@ -121,6 +115,63 @@ select {
   background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px;
 }
 select option { background: var(--color-surface); color: var(--color-text-primary); }
+
+/* ── Markdown body (chat messages) ── */
+.markdown-body { font-size: 13px; line-height: 1.55; }
+.markdown-body > *:first-child { margin-top: 0; }
+.markdown-body > *:last-child { margin-bottom: 0; }
+.markdown-body p { margin: 0.4em 0; }
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin: 0.8em 0 0.3em; font-weight: 600; color: var(--color-text-primary);
+  line-height: 1.25;
+}
+.markdown-body h1 { font-size: 1.2em; }
+.markdown-body h2 { font-size: 1.1em; }
+.markdown-body h3 { font-size: 1.02em; color: var(--color-primary); }
+.markdown-body h4 { font-size: 0.95em; color: var(--color-text-secondary); }
+.markdown-body strong { color: var(--color-text-primary); font-weight: 600; }
+.markdown-body em { color: var(--color-text-secondary); }
+.markdown-body a { color: var(--color-primary); text-decoration: underline; }
+.markdown-body code {
+  background: rgba(255,255,255,0.06); padding: 1px 5px;
+  border-radius: 4px; font-size: 0.9em;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+}
+.markdown-body pre {
+  background: rgba(0,0,0,0.35); padding: 10px 12px;
+  border-radius: 8px; margin: 0.5em 0;
+  overflow-x: auto; font-size: 12px;
+  border: 1px solid var(--color-border);
+}
+.markdown-body pre code { background: transparent; padding: 0; }
+.markdown-body ul, .markdown-body ol {
+  margin: 0.4em 0; padding-left: 1.4em;
+}
+.markdown-body li { margin: 0.2em 0; }
+.markdown-body blockquote {
+  border-left: 2px solid var(--color-primary); padding-left: 10px;
+  margin: 0.5em 0; color: var(--color-text-secondary);
+}
+.markdown-body hr {
+  border: none; border-top: 1px solid var(--color-border);
+  margin: 0.8em 0;
+}
+.markdown-body table {
+  border-collapse: collapse; margin: 0.6em 0;
+  font-size: 12px; width: 100%;
+}
+.markdown-body th, .markdown-body td {
+  border: 1px solid var(--color-border);
+  padding: 6px 10px; text-align: left;
+}
+.markdown-body th {
+  background: rgba(255,255,255,0.04); font-weight: 600;
+  color: var(--color-text-primary);
+}
+.markdown-body tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
 
 /* ── Range slider ── */
 input[type="range"] {

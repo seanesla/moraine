@@ -17,13 +17,13 @@ export default function ChatPanel() {
   }, [messages, isTyping]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full">
       {/* Messages area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
           <SuggestionChips onSelect={sendMessage} />
         ) : (
-          <div className="max-w-3xl mx-auto py-4">
+          <div className="w-full py-4">
             {messages.map((msg) => (
               <MessageBubble key={msg.id} message={msg} />
             ))}

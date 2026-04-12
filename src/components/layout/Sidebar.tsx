@@ -6,7 +6,7 @@ import { useScenarioStore } from "../../stores/scenarioStore";
 
 export default function Sidebar() {
   const { lakes, selectedLakeId, setSelectedLake } = useAppStore();
-  const { params, setParam, setAllParams, isRunning, runScenario } = useScenarioStore();
+  const { params, setParam, setAllParams, isRunning, runScenario, clearResult } = useScenarioStore();
   const selectedLake = lakes.find((l) => l.id === selectedLakeId);
 
   useEffect(() => {
@@ -20,8 +20,10 @@ export default function Sidebar() {
         wave_multiplier: 1.5,
         decay_rate: 0.3,
       });
+      // Clear any stale results from a previously-selected lake
+      clearResult();
     }
-  }, [selectedLakeId, selectedLake, setAllParams]);
+  }, [selectedLakeId, selectedLake, setAllParams, clearResult]);
 
   const handleRun = () => { if (selectedLake) runScenario(selectedLake.villages); };
 
@@ -29,7 +31,15 @@ export default function Sidebar() {
     n <= 0.04 ? "Smooth" : n <= 0.06 ? "Normal" : n <= 0.08 ? "Rocky" : n <= 0.1 ? "Mountain" : "Debris";
 
   return (
-    <aside className="flex h-full w-[240px] flex-col py-4 px-3 gap-3 overflow-y-auto">
+    <aside className="flex w-[240px] flex-col py-4 px-3 gap-3 overflow-y-auto
+      my-3 ml-3 rounded-2xl
+      bg-[rgba(9,9,11,0.55)] backdrop-blur-[16px] backdrop-saturate-[1.2]
+      border border-white/[0.07]
+      shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)]
+      transition-all duration-500 ease-out
+      hover:scale-[1.015] hover:bg-[rgba(9,9,11,0.7)]
+      hover:border-white/[0.14]
+      hover:shadow-[0_16px_48px_-8px_rgba(0,0,0,0.7),0_0_40px_-14px_var(--color-glow-primary)]">
 
       {/* Lake selector */}
       <GlassCard variant="dense" hover={false} className="p-4 flex flex-col gap-3">
@@ -39,7 +49,7 @@ export default function Sidebar() {
           {lakes.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
         </select>
         {selectedLake && (
-          <span className="text-[10px] text-text-muted truncate">
+          <span className="text-[10px] text-text-muted leading-snug">
             {selectedLake.region} · {selectedLake.elevation_m.toLocaleString()}m · Risk {selectedLake.risk_rank}
           </span>
         )}

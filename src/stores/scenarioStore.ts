@@ -37,6 +37,7 @@ export const useScenarioStore = create<ScenarioState>((set, get) => ({
   setAllParams: (params) => set({ params }),
 
   runScenario: async (villages) => {
+    if (get().isRunning) return;
     set({ isRunning: true, error: null });
     try {
       const { params } = get();

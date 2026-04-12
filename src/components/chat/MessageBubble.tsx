@@ -1,4 +1,6 @@
 import { User, Bot } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { ChatMessage } from "../../types/chat";
 
 interface MessageBubbleProps {
@@ -30,7 +32,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       <div
         className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? "bg-accent-blue/10 border border-accent-blue/15 text-text-primary rounded-tr-sm"
+            ? "bg-accent-blue/10 border border-accent-blue/20 text-text-primary rounded-tr-sm"
             : "bg-bg-tertiary/60 border border-border text-text-primary rounded-tl-sm"
         }`}
       >
@@ -49,8 +51,16 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           </div>
         )}
 
-        {/* Message content - simple whitespace preservation */}
-        <div className="whitespace-pre-wrap">{message.content}</div>
+        {/* Message content — user plain, assistant markdown */}
+        {isUser ? (
+          <div className="whitespace-pre-wrap">{message.content}</div>
+        ) : (
+          <div className="markdown-body">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {message.content}
+            </ReactMarkdown>
+          </div>
+        )}
       </div>
     </div>
   );

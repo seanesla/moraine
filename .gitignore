@@ -13,6 +13,7 @@ data/tiles/
 # Node / Frontend
 node_modules/
 .vite/
+tsconfig.tsbuildinfo
 
 # Tauri
 src-tauri/target/

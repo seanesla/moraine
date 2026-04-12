@@ -26,7 +26,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
 
   return (
     <div className="p-4 border-t border-border bg-bg-secondary/60">
-      <div className="flex items-end gap-2 max-w-3xl mx-auto">
+      <div className="flex items-end gap-2 w-full">
         <div className="flex-1 relative">
           <textarea
             ref={inputRef}

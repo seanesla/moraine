@@ -36,6 +36,3 @@ export const severityConfig: Record<
   },
 };
 
-export function severityClass(severity: SeverityLevel): string {
-  return `severity-${severity.toLowerCase()}`;
-}

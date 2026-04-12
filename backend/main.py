@@ -1,6 +1,6 @@
 """
 FastAPI backend for Moraine GLOF calculator.
-Wraps the existing Python modules (glof_core, runners, tile_manager) as REST/WebSocket endpoints.
+Wraps the existing Python modules (glof_core, gemini_runner/ollama_runner) as REST/WebSocket endpoints.
 
 Run in development:
     PYTHONPATH=. uvicorn backend.main:app --reload --port 8741
@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # Ensure project root is importable
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from backend.routers import scenario, lakes, chat, tiles
+from backend.routers import scenario, lakes, chat
 
 app = FastAPI(
     title="Moraine API",
@@ -38,7 +38,6 @@ app.add_middleware(
 app.include_router(scenario.router)
 app.include_router(lakes.router)
 app.include_router(chat.router)
-app.include_router(tiles.router)
 
 
 @app.get("/api/health")

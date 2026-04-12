@@ -12,10 +12,10 @@ interface ResultsDashboardProps {
 
 export default function ResultsDashboard({ result, lake }: ResultsDashboardProps) {
   return (
-    <div className="p-6 space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 w-full">
       <ResultsHero result={result} />
       <CountdownGrid villages={result.villages} />
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_1.2fr] gap-6">
         <ArrivalChart villages={result.villages} />
         <FloodMap result={result} lake={lake} />
       </div>

@@ -66,12 +66,3 @@ async def chat_websocket(ws: WebSocket):
 
     except WebSocketDisconnect:
         pass
-
-
-@router.post("/api/chat/reset")
-def reset_chat():
-    """Reset the LLM conversation history."""
-    runner = get_runner()
-    if runner:
-        runner.reset()
-    return {"status": "ok"}

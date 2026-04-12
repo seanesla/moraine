@@ -21,14 +21,24 @@ export const useAppStore = create<AppState>((set, get) => ({
   activeView: "dashboard",
 
   fetchLakes: async () => {
-    try {
-      const lakes = await apiFetch<Lake[]>("/api/lakes");
-      set({ lakes, backendStatus: "ready" });
-      if (!get().selectedLakeId && lakes.length > 0) {
-        get().setSelectedLake(lakes[0].id);
+    // Retry up to ~12 seconds to let the backend warm up on cold start
+    const maxAttempts = 15;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        const lakes = await apiFetch<Lake[]>("/api/lakes");
+        set({ lakes, backendStatus: "ready" });
+        if (!get().selectedLakeId && lakes.length > 0) {
+          get().setSelectedLake(lakes[0].id);
+        }
+        return;
+      } catch {
+        if (attempt === maxAttempts - 1) {
+          set({ backendStatus: "error" });
+          return;
+        }
+        // 800ms backoff between attempts
+        await new Promise((r) => setTimeout(r, 800));
       }
-    } catch {
-      set({ backendStatus: "error" });
     }
   },
 

@@ -12,8 +12,6 @@
     "core:window:allow-toggle-maximize",
     "core:window:allow-close",
     "core:window:allow-minimize",
-    "shell:allow-spawn",
-    "shell:allow-stdin-write",
-    "shell:allow-kill"
+    "mcp-bridge:default"
   ]
 }

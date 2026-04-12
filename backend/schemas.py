@@ -22,14 +22,6 @@ class ScenarioRequest(BaseModel):
     decay_rate: float = 0.30
 
 
-class ValidateRequest(BaseModel):
-    lake_volume_m3: float
-    valley_slope: float
-    channel_width_m: float
-    manning_n: float
-    channel_depth_m: float | None = None
-
-
 class DischargeResult(BaseModel):
     popov_m3s: float
     huggel_m3s: float
@@ -61,11 +53,6 @@ class ScenarioResponse(BaseModel):
     villages: list[VillageResult]
 
 
-class ValidateResponse(BaseModel):
-    warnings: list[str]
-    valid: bool
-
-
 class LakeVillage(BaseModel):
     name: str
     name_nepali: str | None = None
@@ -92,12 +79,3 @@ class Lake(BaseModel):
     channel_depth_m: float
     manning_n: float
     villages: list[LakeVillage]
-
-
-class ChatMessageIn(BaseModel):
-    message: str
-
-
-class TileStatus(BaseModel):
-    cached: bool
-    tile_url: str | None = None
