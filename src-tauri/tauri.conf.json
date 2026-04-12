@@ -12,13 +12,15 @@
   "app": {
     "windows": [
       {
-        "title": "Moraine — GLOF Response Agent",
+        "title": "Moraine",
         "width": 1400,
         "height": 900,
         "minWidth": 1024,
         "minHeight": 700,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true
       }
     ],
     "security": {
