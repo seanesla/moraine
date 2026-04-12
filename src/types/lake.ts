@@ -24,4 +24,6 @@ export interface Lake {
   channel_depth_m: number;
   manning_n: number;
   villages: Village[];
+  /** Id of the regional pack this lake belongs to (e.g. "hkh", "andes"). */
+  pack_id?: string;
 }

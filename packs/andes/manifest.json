@@ -1,0 +1,27 @@
+{
+  "id": "andes",
+  "name": "Andes",
+  "description": "Glacial lakes in the Peruvian Andes (Cordillera Blanca, Ancash). The Cordillera Blanca contains the world's most concentrated tropical glaciation and has produced multiple devastating GLOFs including the 1941 Huaraz disaster (Lake Palcacocha, ~1800-7000 deaths) and the 2010 Carhuaz event (Laguna 513).",
+  "version": "1.0.0",
+  "last_updated": "2026-04-11",
+  "source": "INAIGEM + ANA + published peer-reviewed case studies (Cordillera Blanca)",
+  "source_url": "https://www.gob.pe/inaigem",
+  "lake_count": 6,
+  "region_bounds": {
+    "min_lat": -14.0,
+    "max_lat": -7.0,
+    "min_lon": -79.0,
+    "max_lon": -76.0
+  },
+  "size_bytes": 5233,
+  "sha256": "f2638265b0e07e2018536d91aac014da3ea408e2df0c10f72329913f92b8a0d6",
+  "sources": [
+    "Mergili, M., Schneider, D., Worni, R., Schneider, J. F. (2020). Reconstruction of the 1941 GLOF process chain at Lake Palcacocha (Cordillera Blanca, Peru). Hydrology and Earth System Sciences, 24, 93-114.",
+    "Schneider, D., Huggel, C., Cochachin, A., et al. (2014). Mapping hazards from glacier lake outburst floods based on modelling of process cascades at Lake 513, Carhuaz, Peru. Advances in Geosciences, 35, 145-155.",
+    "Hubbard, B., Heald, A., Reynolds, J. M., et al. (2005). Impact of a rock avalanche on a moraine-dammed proglacial lake: Laguna Safuna Alta, Cordillera Blanca, Peru. Earth Surface Processes and Landforms, 30(10), 1251-1264.",
+    "INAIGEM (2018). Inventario Nacional de Glaciares y Lagunas - Cordillera Blanca. Instituto Nacional de Investigación en Glaciares y Ecosistemas de Montaña, Huaraz, Peru.",
+    "Carey, M., Huggel, C., Bury, J., Portocarrero, C., Haeberli, W. (2012). An integrated socio-environmental framework for glacier hazard management and climate change adaptation: lessons from Lake 513, Cordillera Blanca, Peru. Climatic Change, 112, 733-767.",
+    "Emmer, A., Vilimek, V. (2014). New method for assessing the susceptibility of glacial lakes to outburst floods in the Cordillera Blanca, Peru. Hydrology and Earth System Sciences, 18, 3461-3479.",
+    "Frey, H., Huggel, C., Chisolm, R. E., et al. (2018). Multi-source glacial lake outburst flood hazard assessment and mapping for Huaraz, Cordillera Blanca, Peru. Frontiers in Earth Science, 6, 210."
+  ]
+}

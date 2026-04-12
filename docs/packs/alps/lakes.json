@@ -1,0 +1,90 @@
+{
+  "description": "Glacial lakes in the European Alps (Switzerland and Italy). The Alps are the most heavily monitored glacier-lake system in the world. These lakes are smaller than Himalayan equivalents (typically 1e5-1e7 m3) but have produced classic GLOFs over the past two centuries. Märjelensee outbursts repeatedly damaged Rhone valley villages during the Little Ice Age; Gornersee drains annually.",
+  "lakes": [
+    {
+      "id": "marjelensee",
+      "name": "Marjelensee",
+      "country": "Switzerland",
+      "region": "Valais (Aletsch Glacier)",
+      "lat": 46.4408,
+      "lon": 8.0920,
+      "elevation_m": 2348,
+      "volume_m3": 10800000,
+      "dam_height_m": 80,
+      "risk_rank": "Historical event (19th century)",
+      "valley_slope": 0.06,
+      "channel_width_m": 25,
+      "channel_depth_m": 4,
+      "manning_n": 0.05,
+      "villages": [
+        {"name": "Fiesch", "distance_km": 12, "elevation_m": 1050, "population": 950, "lat": 46.3990, "lon": 8.1340},
+        {"name": "Lax", "distance_km": 15, "elevation_m": 1045, "population": 400, "lat": 46.3870, "lon": 8.1620},
+        {"name": "Morel", "distance_km": 22, "elevation_m": 760, "population": 500, "lat": 46.3550, "lon": 8.0470},
+        {"name": "Brig-Glis", "distance_km": 35, "elevation_m": 681, "population": 13000, "lat": 46.3160, "lon": 7.9870}
+      ]
+    },
+    {
+      "id": "grubengletschersee",
+      "name": "Grubengletschersee",
+      "country": "Switzerland",
+      "region": "Valais (Saas Valley)",
+      "lat": 46.1750,
+      "lon": 7.9600,
+      "elevation_m": 2780,
+      "volume_m3": 170000,
+      "dam_height_m": 12,
+      "risk_rank": "Historical event (1968)",
+      "valley_slope": 0.09,
+      "channel_width_m": 15,
+      "channel_depth_m": 3,
+      "manning_n": 0.06,
+      "villages": [
+        {"name": "Saas-Balen", "distance_km": 7, "elevation_m": 1483, "population": 350, "lat": 46.1502, "lon": 7.9277},
+        {"name": "Saas-Grund", "distance_km": 11, "elevation_m": 1559, "population": 1000, "lat": 46.1230, "lon": 7.9360},
+        {"name": "Saas-Fee", "distance_km": 14, "elevation_m": 1800, "population": 1700, "lat": 46.1085, "lon": 7.9286}
+      ]
+    },
+    {
+      "id": "gornersee",
+      "name": "Gornersee",
+      "country": "Switzerland",
+      "region": "Valais (Gorner Glacier, Zermatt)",
+      "lat": 45.9625,
+      "lon": 7.8147,
+      "elevation_m": 2598,
+      "volume_m3": 4000000,
+      "dam_height_m": 30,
+      "risk_rank": "Annual jokulhlaup",
+      "valley_slope": 0.08,
+      "channel_width_m": 20,
+      "channel_depth_m": 3,
+      "manning_n": 0.05,
+      "villages": [
+        {"name": "Furi", "distance_km": 6, "elevation_m": 1864, "population": 50, "lat": 46.0010, "lon": 7.7510},
+        {"name": "Zermatt", "distance_km": 11, "elevation_m": 1620, "population": 5800, "lat": 46.0207, "lon": 7.7491},
+        {"name": "Tasch", "distance_km": 16, "elevation_m": 1450, "population": 1500, "lat": 46.0680, "lon": 7.7790}
+      ]
+    },
+    {
+      "id": "lago_del_miage",
+      "name": "Lago del Miage",
+      "country": "Italy",
+      "region": "Aosta Valley (Mont Blanc, Val Veny)",
+      "lat": 45.7910,
+      "lon": 6.8780,
+      "elevation_m": 2020,
+      "volume_m3": 250000,
+      "dam_height_m": 18,
+      "risk_rank": "II",
+      "valley_slope": 0.07,
+      "channel_width_m": 15,
+      "channel_depth_m": 3,
+      "manning_n": 0.06,
+      "villages": [
+        {"name": "Visaille", "distance_km": 3, "elevation_m": 1660, "population": 30, "lat": 45.8050, "lon": 6.8920},
+        {"name": "Plampincieux", "distance_km": 8, "elevation_m": 1500, "population": 80, "lat": 45.8240, "lon": 6.9320},
+        {"name": "Courmayeur", "distance_km": 13, "elevation_m": 1224, "population": 2800, "lat": 45.7969, "lon": 6.9692}
+      ]
+    }
+  ]
+}

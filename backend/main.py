@@ -11,11 +11,12 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 # Ensure project root is importable
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from backend.routers import scenario, lakes, chat
+from backend.routers import scenario, lakes, chat, packs
 
 app = FastAPI(
     title="Moraine API",
@@ -38,6 +39,23 @@ app.add_middleware(
 app.include_router(scenario.router)
 app.include_router(lakes.router)
 app.include_router(chat.router)
+app.include_router(packs.router)
+
+# ── Self-hosted pack registry (Phase 4) ───────────────────────────────────
+#
+# The remote-update flow needs an HTTP-accessible registry. For the
+# hackathon demo we serve <project_root>/docs/packs/ from this same
+# FastAPI process at /registry/, so the whole update story works end
+# to end with zero external infrastructure (no GitHub Pages, no S3).
+# For real deployment, override MORAINE_PACK_REGISTRY_URL via env var
+# to point at a CDN.
+_REGISTRY_DIR = Path(__file__).parent.parent / "docs" / "packs"
+if _REGISTRY_DIR.is_dir():
+    app.mount(
+        "/registry",
+        StaticFiles(directory=str(_REGISTRY_DIR)),
+        name="registry",
+    )
 
 
 @app.get("/api/health")

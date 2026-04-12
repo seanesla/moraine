@@ -1,0 +1,27 @@
+{
+  "id": "alps",
+  "name": "Alps",
+  "description": "Glacial lakes in the European Alps (Switzerland and Italy). Contains classic historical GLOF sites: Marjelensee (Aletsch, repeatedly drained during the Little Ice Age), Grubengletschersee (Saas Valley, 1968 outburst), Gornersee (Zermatt, drains annually as a jokulhlaup), and Lago del Miage (Mont Blanc, supraglacial). Smaller volumes than Himalayan lakes but excellent for monitoring research.",
+  "version": "1.0.0",
+  "last_updated": "2026-04-11",
+  "source": "Swiss Glacier Monitoring Network (GLAMOS) + published case studies",
+  "source_url": "https://www.glamos.ch/",
+  "lake_count": 4,
+  "region_bounds": {
+    "min_lat": 44.5,
+    "max_lat": 47.5,
+    "min_lon": 6.0,
+    "max_lon": 13.5
+  },
+  "size_bytes": 3791,
+  "sha256": "6edcf302be6c789422b5ec1c3bf61468cf0d392de43eb3d9ec78af8e7f8c63c6",
+  "sources": [
+    "Haeberli, W., Kaab, A., Vonder Muhll, D., Teysseire, P. (2001). Prevention of outburst floods from periglacial lakes at Grubengletscher, Valais, Swiss Alps. Journal of Glaciology, 47(156), 111-122.",
+    "Huss, M., Bauder, A., Werder, M., Funk, M., Hock, R. (2007). Glacier-dammed lake outburst events of Gornersee, Switzerland. Journal of Glaciology, 53(181), 189-200.",
+    "Werder, M. A., Bauder, A., Funk, M., Keusen, H. R. (2010). Hazard assessment investigations in connection with the formation of a lake on the tongue of Unterer Grindelwaldgletscher, Bernese Alps, Switzerland. Natural Hazards and Earth System Sciences, 10, 227-237.",
+    "Diolaiuti, G., Citterio, M., Carnielli, T., D'Agata, C., Kirkbride, M., Smiraglia, C. (2006). Rates, processes and morphology of freshwater calving at Miage Glacier (Italian Alps). Hydrological Processes, 20, 2233-2244.",
+    "Mottet, G. (1962). Les laves torrentielles de la Marjelen (Suisse). Revue de geographie alpine, 50(1), 105-117. (Marjelensee 19th-century outbursts)",
+    "GLAMOS (2023). Swiss Glacier Monitoring Network annual reports. Glaciological Reports of the Cryospheric Commission of the Swiss Academy of Sciences.",
+    "Frey, H., Haeberli, W., Linsbauer, A., Huggel, C., Paul, F. (2010). A multi-level strategy for anticipating future glacier lake formation and associated hazard potentials. Natural Hazards and Earth System Sciences, 10, 339-352."
+  ]
+}

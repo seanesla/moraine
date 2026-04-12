@@ -1,53 +1,22 @@
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
 import DarkVeil from "../common/DarkVeil";
+import RegionManager from "../settings/RegionManager";
 import { useAppStore } from "../../stores/appStore";
-
-const SUBTITLE_PHRASES = [
-  "glof early warning",
-  "flood simulator",
-  "lake monitor",
-  "risk forecaster",
-  "himalayan watch",
-];
-
-function RotatingSubtitle() {
-  const [index, setIndex] = useState(0);
-  const [fading, setFading] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFading(true);
-      setTimeout(() => {
-        setIndex((i) => (i + 1) % SUBTITLE_PHRASES.length);
-        setFading(false);
-      }, 350);
-    }, 3200);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <span
-      className="inline-block text-[9px] text-text-muted/60 font-medium tracking-[0.18em] uppercase transition-all duration-300 ease-out whitespace-nowrap"
-      style={{
-        opacity: fading ? 0 : 1,
-        transform: fading ? "translateY(-2px)" : "translateY(0)",
-        minWidth: "130px",
-      }}
-    >
-      {SUBTITLE_PHRASES[index]}
-    </span>
-  );
-}
+import { usePackStore } from "../../stores/packStore";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const fetchLakes = useAppStore((s) => s.fetchLakes);
+  const fetchPacks = usePackStore((s) => s.fetchPacks);
+  const settingsOpen = useAppStore((s) => s.settingsOpen);
+  const setSettingsOpen = useAppStore((s) => s.setSettingsOpen);
 
   useEffect(() => {
     fetchLakes();
-  }, [fetchLakes]);
+    fetchPacks();
+  }, [fetchLakes, fetchPacks]);
 
   const handleDrag = useCallback((e: React.MouseEvent) => {
     if (e.buttons === 1) {
@@ -68,14 +37,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Title bar — drag via startDragging API */}
       <div className="h-10 shrink-0 relative cursor-default z-10" onMouseDown={handleDrag}>
-        <div className="absolute left-20 top-0 h-full flex items-baseline gap-2.5"
+        <div className="absolute left-20 top-0 h-full flex items-baseline"
           onMouseDown={(e) => e.stopPropagation()}
           style={{ paddingTop: "11px" }}>
           <span className="text-[13px] font-semibold tracking-[0.08em] text-text-primary/85 leading-none">
             moraine
           </span>
-          <span className="text-text-muted/30 leading-none select-none">·</span>
-          <RotatingSubtitle />
         </div>
         <div className="absolute right-3 top-0 h-full flex items-center"
           onMouseDown={(e) => e.stopPropagation()}>
@@ -91,6 +58,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </main>
         </div>
       </div>
+
+      {/* Region settings overlay — mounted unconditionally so its
+          mount/unmount animations don't fight the dialog's own state. */}
+      <RegionManager open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 }

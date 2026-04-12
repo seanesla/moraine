@@ -1,0 +1,31 @@
+{
+  "id": "hkh",
+  "name": "Hindu Kush Himalaya",
+  "description": "Glacial lakes in Nepal, Bhutan, Northern India, and Tibet. Covers well-studied potentially dangerous lakes from ICIMOD inventories and published case studies including the 1985 Dig Tsho, 1994 Lugge Tsho, 2013 Kedarnath, and 2023 South Lhonak GLOF disasters. v1.2.0 adds Cirenmaco (Tibet) — site of the 1981 catastrophic GLOF that destroyed sections of the Friendship Highway and the Sun Koshi hydroelectric station downstream in Nepal.",
+  "version": "1.2.0",
+  "last_updated": "2026-04-12",
+  "source": "ICIMOD + published peer-reviewed case studies",
+  "source_url": "https://rds.icimod.org/",
+  "lake_count": 12,
+  "region_bounds": {
+    "min_lat": 26.0,
+    "max_lat": 35.0,
+    "min_lon": 79.0,
+    "max_lon": 95.0
+  },
+  "size_bytes": 14853,
+  "sha256": "54ac804671c78a6f7b50f6f3d572da8c9b3d261f1e27ba8ae892a8ac24800c89",
+  "sources": [
+    "ICIMOD (2020). Inventory of glacial lakes and identification of potentially dangerous glacial lakes in the Koshi, Gandaki, and Karnali river basins. https://rds.icimod.org/",
+    "Vuichard, D. & Zimmermann, M. (1987). The 1985 catastrophic drainage of a moraine-dammed lake, Khumbu Himal, Nepal. Mountain Research and Development, 7(2), 91-110. (Dig Tsho)",
+    "Reynolds, J. M. (1999). Glacial hazard assessment at Tsho Rolpa, Rolwaling, Nepal. Quarterly Journal of Engineering Geology, 32, 209-214.",
+    "Watanabe, T. & Rothacher, D. (1996). The 1994 Lugge Tsho glacial lake outburst flood, Bhutan Himalaya. Mountain Research and Development, 16(1), 77-81.",
+    "Bajracharya, S. R., Maharjan, S. B., Shrestha, F., et al. (2020). Inventory of glacial lakes in HKH. ICIMOD.",
+    "Wang, W., Yao, T., Yang, X. (2011). Variations of glacial lakes and glaciers in the Boshula mountain range, southeast Tibet. (Longbasaba & Pida)",
+    "Wang, X., Liu, S., Ding, Y., et al. (2012). An approach for estimating the breach probabilities of moraine-dammed lakes in the Chinese Himalayas using remote-sensing data. Natural Hazards and Earth System Sciences.",
+    "Sattar, A., Goswami, A., et al. (2024). Reconstruction of the 2023 South Lhonak Lake outburst flood and modelling future scenarios. Natural Hazards.",
+    "NCHM Bhutan (2019). Reassessment of Potentially Dangerous Glacial Lakes in Bhutan.",
+    "Khanal, N. R., Hu, J. M., Mool, P. (2015). Glacial lake outburst flood risk in the Poiqu/Bhote Koshi/Sun Koshi river basin in the central Himalayas. Mountain Research and Development.",
+    "Xu, D. (1988). Characteristics of debris flow caused by outburst of glacial lake in Boqu river, Xizang, China, 1981. GeoJournal, 17(4), 569-580. (Cirenmaco 1981 GLOF)"
+  ]
+}

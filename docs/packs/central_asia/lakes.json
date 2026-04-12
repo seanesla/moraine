@@ -1,0 +1,92 @@
+{
+  "description": "Glacial and landslide-dammed lakes in Central Asia (Pamirs and Tien Shan ranges of Tajikistan, Kyrgyzstan, and Kazakhstan). Sarez Lake is the largest landslide-dammed lake on Earth and represents a transboundary hazard affecting potentially millions of downstream residents in the Amu Darya basin. Merzbacher Lake produces an annual jokulhlaup. Issyk Lake was the site of the deadly 1963 Kazakhstan disaster.",
+  "lakes": [
+    {
+      "id": "sarez",
+      "name": "Sarez Lake",
+      "country": "Tajikistan",
+      "region": "Pamirs (Rushan District, Gorno-Badakhshan)",
+      "lat": 38.2017,
+      "lon": 72.7575,
+      "elevation_m": 3263,
+      "volume_m3": 16000000000,
+      "dam_height_m": 567,
+      "risk_rank": "I",
+      "valley_slope": 0.03,
+      "channel_width_m": 50,
+      "channel_depth_m": 8,
+      "manning_n": 0.06,
+      "villages": [
+        {"name": "Barchadiv", "distance_km": 12, "elevation_m": 2900, "population": 250, "lat": 38.2440, "lon": 72.6750},
+        {"name": "Basid", "distance_km": 38, "elevation_m": 2400, "population": 600, "lat": 38.2870, "lon": 72.4520},
+        {"name": "Roshorv", "distance_km": 60, "elevation_m": 2300, "population": 700, "lat": 38.3120, "lon": 72.2230},
+        {"name": "Rushan", "distance_km": 130, "elevation_m": 1980, "population": 7000, "lat": 37.9520, "lon": 71.5550},
+        {"name": "Khorog", "distance_km": 200, "elevation_m": 2100, "population": 30000, "lat": 37.4900, "lon": 71.5550}
+      ]
+    },
+    {
+      "id": "merzbacher",
+      "name": "Merzbacher Lake",
+      "country": "Kyrgyzstan",
+      "region": "Tien Shan (Inylchek/Engilchek Glacier)",
+      "lat": 42.2000,
+      "lon": 79.8670,
+      "elevation_m": 3304,
+      "volume_m3": 70000000,
+      "dam_height_m": 60,
+      "risk_rank": "Annual jokulhlaup",
+      "valley_slope": 0.04,
+      "channel_width_m": 35,
+      "channel_depth_m": 5,
+      "manning_n": 0.07,
+      "villages": [
+        {"name": "Inylchek (frontier post)", "distance_km": 60, "elevation_m": 2200, "population": 200, "lat": 42.0500, "lon": 79.2500},
+        {"name": "Maidaadyr", "distance_km": 95, "elevation_m": 1820, "population": 400, "lat": 42.1320, "lon": 78.8500},
+        {"name": "Echkilitash", "distance_km": 140, "elevation_m": 1700, "population": 800, "lat": 42.2200, "lon": 78.3500}
+      ]
+    },
+    {
+      "id": "yashilkul",
+      "name": "Yashilkul",
+      "country": "Tajikistan",
+      "region": "Pamirs (Murghab District, Gorno-Badakhshan)",
+      "lat": 37.7400,
+      "lon": 72.6800,
+      "elevation_m": 3734,
+      "volume_m3": 480000000,
+      "dam_height_m": 80,
+      "risk_rank": "II",
+      "valley_slope": 0.025,
+      "channel_width_m": 30,
+      "channel_depth_m": 5,
+      "manning_n": 0.06,
+      "villages": [
+        {"name": "Bulunkul", "distance_km": 10, "elevation_m": 3700, "population": 200, "lat": 37.7100, "lon": 72.5800},
+        {"name": "Vrang", "distance_km": 90, "elevation_m": 2900, "population": 600, "lat": 37.4500, "lon": 72.4500},
+        {"name": "Sezhd", "distance_km": 130, "elevation_m": 2400, "population": 400, "lat": 37.4900, "lon": 72.0500},
+        {"name": "Khorog", "distance_km": 190, "elevation_m": 2100, "population": 30000, "lat": 37.4900, "lon": 71.5550}
+      ]
+    },
+    {
+      "id": "issyk",
+      "name": "Lake Issyk",
+      "country": "Kazakhstan",
+      "region": "Trans-Ili Alatau (Tien Shan, Almaty Region)",
+      "lat": 43.2531,
+      "lon": 77.4847,
+      "elevation_m": 1756,
+      "volume_m3": 22000000,
+      "dam_height_m": 50,
+      "risk_rank": "Historical event (1963)",
+      "valley_slope": 0.07,
+      "channel_width_m": 25,
+      "channel_depth_m": 4,
+      "manning_n": 0.08,
+      "villages": [
+        {"name": "Issyk Lake settlement", "distance_km": 4, "elevation_m": 1500, "population": 200, "lat": 43.2300, "lon": 77.4900},
+        {"name": "Esik (Yesik)", "distance_km": 12, "elevation_m": 940, "population": 36000, "lat": 43.3550, "lon": 77.4500},
+        {"name": "Turgen", "distance_km": 25, "elevation_m": 870, "population": 4500, "lat": 43.3870, "lon": 77.5670}
+      ]
+    }
+  ]
+}

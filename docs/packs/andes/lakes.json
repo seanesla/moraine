@@ -1,0 +1,131 @@
+{
+  "description": "Glacial lakes in the Peruvian Andes (Cordillera Blanca, Ancash). The Cordillera Blanca is the world's most GLOF-prone tropical mountain range. Parameters from INAIGEM, ANA, and published case studies including the 1941 Palcacocha and 2010 Laguna 513 events.",
+  "lakes": [
+    {
+      "id": "palcacocha",
+      "name": "Lake Palcacocha",
+      "country": "Peru",
+      "region": "Cordillera Blanca, Ancash",
+      "lat": -9.3969,
+      "lon": -77.3797,
+      "elevation_m": 4566,
+      "volume_m3": 17300000,
+      "dam_height_m": 60,
+      "risk_rank": "I",
+      "valley_slope": 0.06,
+      "channel_width_m": 25,
+      "channel_depth_m": 4,
+      "manning_n": 0.06,
+      "villages": [
+        {"name": "Nueva Florida", "distance_km": 10, "elevation_m": 3800, "population": 500, "lat": -9.4500, "lon": -77.4400},
+        {"name": "Llupa", "distance_km": 18, "elevation_m": 3300, "population": 1200, "lat": -9.5050, "lon": -77.5050},
+        {"name": "Huaraz", "distance_km": 23, "elevation_m": 3052, "population": 120000, "lat": -9.5290, "lon": -77.5290}
+      ]
+    },
+    {
+      "id": "safuna_alta",
+      "name": "Laguna Safuna Alta",
+      "country": "Peru",
+      "region": "Cordillera Blanca, Ancash",
+      "lat": -8.8390,
+      "lon": -77.6320,
+      "elevation_m": 4354,
+      "volume_m3": 15000000,
+      "dam_height_m": 90,
+      "risk_rank": "Historical event (2002)",
+      "valley_slope": 0.07,
+      "channel_width_m": 25,
+      "channel_depth_m": 4,
+      "manning_n": 0.07,
+      "villages": [
+        {"name": "Pucajirca settlement", "distance_km": 6, "elevation_m": 3950, "population": 80, "lat": -8.8780, "lon": -77.6420},
+        {"name": "Quitaracsa", "distance_km": 22, "elevation_m": 2700, "population": 350, "lat": -8.9460, "lon": -77.7510},
+        {"name": "Yuracmarca", "distance_km": 38, "elevation_m": 1550, "population": 2200, "lat": -8.7430, "lon": -77.8950}
+      ]
+    },
+    {
+      "id": "laguna_513",
+      "name": "Laguna 513",
+      "country": "Peru",
+      "region": "Cordillera Blanca, Ancash (Hualcan)",
+      "lat": -9.2150,
+      "lon": -77.5530,
+      "elevation_m": 4428,
+      "volume_m3": 12000000,
+      "dam_height_m": 50,
+      "risk_rank": "Historical event (2010)",
+      "valley_slope": 0.08,
+      "channel_width_m": 25,
+      "channel_depth_m": 4,
+      "manning_n": 0.08,
+      "villages": [
+        {"name": "Pariacaca", "distance_km": 8, "elevation_m": 3450, "population": 150, "lat": -9.2540, "lon": -77.6080},
+        {"name": "Hualcan", "distance_km": 14, "elevation_m": 3150, "population": 700, "lat": -9.2660, "lon": -77.6210},
+        {"name": "Carhuaz", "distance_km": 20, "elevation_m": 2650, "population": 20000, "lat": -9.2780, "lon": -77.6450}
+      ]
+    },
+    {
+      "id": "laguna_69",
+      "name": "Laguna 69",
+      "country": "Peru",
+      "region": "Cordillera Blanca, Ancash (Huascaran NP)",
+      "lat": -9.0098,
+      "lon": -77.6122,
+      "elevation_m": 4600,
+      "volume_m3": 1500000,
+      "dam_height_m": 25,
+      "risk_rank": "II",
+      "valley_slope": 0.07,
+      "channel_width_m": 18,
+      "channel_depth_m": 3,
+      "manning_n": 0.07,
+      "villages": [
+        {"name": "Cebollapampa", "distance_km": 5, "elevation_m": 3900, "population": 50, "lat": -9.0500, "lon": -77.6280},
+        {"name": "Vaqueria", "distance_km": 14, "elevation_m": 3700, "population": 200, "lat": -9.0510, "lon": -77.7080},
+        {"name": "Yanama", "distance_km": 28, "elevation_m": 3400, "population": 1500, "lat": -9.0250, "lon": -77.8420}
+      ]
+    },
+    {
+      "id": "arhuaycocha",
+      "name": "Laguna Arhuaycocha",
+      "country": "Peru",
+      "region": "Cordillera Blanca, Ancash (Santa Cruz)",
+      "lat": -8.9170,
+      "lon": -77.6630,
+      "elevation_m": 4450,
+      "volume_m3": 8000000,
+      "dam_height_m": 40,
+      "risk_rank": "Estimated",
+      "valley_slope": 0.06,
+      "channel_width_m": 20,
+      "channel_depth_m": 4,
+      "manning_n": 0.07,
+      "villages": [
+        {"name": "Taullipampa", "distance_km": 4, "elevation_m": 4250, "population": 30, "lat": -8.9080, "lon": -77.6920},
+        {"name": "Cashapampa", "distance_km": 26, "elevation_m": 2900, "population": 600, "lat": -8.8860, "lon": -77.8410},
+        {"name": "Caraz", "distance_km": 45, "elevation_m": 2256, "population": 13000, "lat": -9.0470, "lon": -77.8090}
+      ]
+    },
+    {
+      "id": "artesoncocha",
+      "name": "Laguna Artesoncocha",
+      "country": "Peru",
+      "region": "Cordillera Blanca, Ancash (Paron basin)",
+      "lat": -8.9650,
+      "lon": -77.6810,
+      "elevation_m": 4280,
+      "volume_m3": 6000000,
+      "dam_height_m": 30,
+      "risk_rank": "Estimated",
+      "valley_slope": 0.06,
+      "channel_width_m": 20,
+      "channel_depth_m": 4,
+      "manning_n": 0.07,
+      "villages": [
+        {"name": "Laguna Paron settlement", "distance_km": 5, "elevation_m": 4185, "population": 25, "lat": -8.9920, "lon": -77.6900},
+        {"name": "Pueblo Libre (Paron)", "distance_km": 28, "elevation_m": 2400, "population": 1100, "lat": -9.0780, "lon": -77.8000},
+        {"name": "Caraz", "distance_km": 38, "elevation_m": 2256, "population": 13000, "lat": -9.0470, "lon": -77.8090}
+      ]
+    }
+  ]
+}

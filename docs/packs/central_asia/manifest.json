@@ -1,0 +1,30 @@
+{
+  "id": "central_asia",
+  "name": "Central Asia",
+  "description": "Glacial and landslide-dammed lakes in the Pamirs and Tien Shan ranges of Tajikistan, Kyrgyzstan, and Kazakhstan. Includes Sarez Lake (the largest landslide-dammed lake on Earth, holding ~16 km3 of water behind a 567m natural dam), Yashilkul (Holocene landslide-dammed lake on the Gunt River), the annually-draining Merzbacher Lake on the Inylchek glacier, and Lake Issyk where the 1963 Kazakhstan disaster occurred.",
+  "version": "1.0.1",
+  "last_updated": "2026-04-12",
+  "source": "USGS + GLOFCA Atlas of Glacial Lakes of Tajikistan + published case studies",
+  "source_url": "https://glofca.org/",
+  "lake_count": 4,
+  "region_bounds": {
+    "min_lat": 36.0,
+    "max_lat": 44.0,
+    "min_lon": 67.0,
+    "max_lon": 81.0
+  },
+  "size_bytes": 4118,
+  "sha256": "c7483c39a9743599a59d1da033d003849f2b27771b96e1dc750efb0feb4113b6",
+  "sources": [
+    "Schuster, R. L., Alford, D. (2004). Usoi Landslide Dam and Lake Sarez, Pamir Mountains, Tajikistan. Environmental & Engineering Geoscience, 10(2), 151-168.",
+    "Risley, J. C., Walder, J. S., Denlinger, R. P. (2006). Usoi Dam wave overtopping and flood routing in the Bartang and Panj rivers, Tajikistan. Natural Hazards, 38, 375-390.",
+    "Ng, F., Liu, S., Mavlyudov, B., Wang, Y. (2007). Climatic control on the peak discharge of glacier outburst floods. Geophysical Research Letters, 34, L21503. (Merzbacher)",
+    "Mayer, C., Lambrecht, A., Hagg, W., Smiraglia, C., Diolaiuti, G. (2008). Glaciological characteristics of the ablation zone of Baltoro glacier, Karakoram, Pakistan.",
+    "Shangguan, D., Liu, S., Ding, Y., et al. (2017). Quick release of internal water storage in a glacier leads to underestimation of the hazard potential of glacial lake outburst floods from Lake Merzbacher in central Tian Shan Mountains. Geophysical Research Letters, 44, 9786-9795.",
+    "Mergili, M., Schneider, J. F. (2011). Regional-scale analysis of lake outburst hazards in the southwestern Pamir, Tajikistan, based on remote sensing and GIS. Natural Hazards and Earth System Sciences, 11, 1447-1462. (Yashilkul + Pamir lakes)",
+    "Komatsu, G., Arzhannikov, S. G., Arzhannikova, A. V., Ershov, K. (2010). Geomorphology of subglacial drumlins, Yashilkul-Bulunkul system, Pamir, Tajikistan. Geomorphology, 122(1-2), 12-23.",
+    "GLOFCA (2022). Atlas of Glacial Lakes of Tajikistan. https://glofca.org/",
+    "Yafyazova, R. (2007). Mudflow hazard in the foothills of Northern Tien Shan: 1963 Issyk disaster reassessment.",
+    "USGS (2007). Usoi Landslide Dam and Lake Sarez - An assessment of hazard and risk in the Pamir Mountains, Tajikistan. UNDRR/USGS Joint Assessment Report."
+  ]
+}

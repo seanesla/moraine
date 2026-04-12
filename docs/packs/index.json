@@ -1,0 +1,52 @@
+{
+  "registry_name": "Moraine Pack Registry",
+  "format_version": "1.0",
+  "generated_at": "2026-04-12",
+  "note": "For local-first dev/demo this registry is served by the Moraine FastAPI backend itself at /registry/. For production deploy this directory to GitHub Pages or any static CDN and override MORAINE_PACK_REGISTRY_URL.",
+  "packs": [
+    {
+      "id": "hkh",
+      "version": "1.2.0",
+      "name": "Hindu Kush Himalaya",
+      "description": "Glacial lakes in Nepal, Bhutan, Northern India, and Tibet. Covers well-studied potentially dangerous lakes from ICIMOD inventories and published case studies including the 1985 Dig Tsho, 1994 Lugge Tsho, 2013 Kedarnath, and 2023 South Lhonak GLOF disasters. v1.2.0 adds Cirenmaco (Tibet) — site of the 1981 catastrophic GLOF that destroyed sections of the Friendship Highway and the Sun Koshi hydroelectric station downstream in Nepal.",
+      "lake_count": 12,
+      "manifest_url": "http://127.0.0.1:8741/registry/hkh/manifest.json",
+      "lakes_url": "http://127.0.0.1:8741/registry/hkh/lakes.json",
+      "sha256": "54ac804671c78a6f7b50f6f3d572da8c9b3d261f1e27ba8ae892a8ac24800c89",
+      "released": "2026-04-12"
+    },
+    {
+      "id": "andes",
+      "version": "1.0.0",
+      "name": "Andes",
+      "description": "Glacial lakes in the Peruvian Andes (Cordillera Blanca, Ancash). The Cordillera Blanca contains the world's most concentrated tropical glaciation and has produced multiple devastating GLOFs including the 1941 Huaraz disaster (Lake Palcacocha, ~1800-7000 deaths) and the 2010 Carhuaz event (Laguna 513).",
+      "lake_count": 6,
+      "manifest_url": "http://127.0.0.1:8741/registry/andes/manifest.json",
+      "lakes_url": "http://127.0.0.1:8741/registry/andes/lakes.json",
+      "sha256": "f2638265b0e07e2018536d91aac014da3ea408e2df0c10f72329913f92b8a0d6",
+      "released": "2026-04-11"
+    },
+    {
+      "id": "alps",
+      "version": "1.0.0",
+      "name": "Alps",
+      "description": "Glacial lakes in the European Alps (Switzerland and Italy). Contains classic historical GLOF sites: Marjelensee (Aletsch, repeatedly drained during the Little Ice Age), Grubengletschersee (Saas Valley, 1968 outburst), Gornersee (Zermatt, drains annually as a jokulhlaup), and Lago del Miage (Mont Blanc, supraglacial). Smaller volumes than Himalayan lakes but excellent for monitoring research.",
+      "lake_count": 4,
+      "manifest_url": "http://127.0.0.1:8741/registry/alps/manifest.json",
+      "lakes_url": "http://127.0.0.1:8741/registry/alps/lakes.json",
+      "sha256": "6edcf302be6c789422b5ec1c3bf61468cf0d392de43eb3d9ec78af8e7f8c63c6",
+      "released": "2026-04-11"
+    },
+    {
+      "id": "central_asia",
+      "version": "1.0.1",
+      "name": "Central Asia",
+      "description": "Glacial and landslide-dammed lakes in the Pamirs and Tien Shan ranges of Tajikistan, Kyrgyzstan, and Kazakhstan. Includes Sarez Lake (the largest landslide-dammed lake on Earth, holding ~16 km3 of water behind a 567m natural dam), Yashilkul (Holocene landslide-dammed lake on the Gunt River), the annually-draining Merzbacher Lake on the Inylchek glacier, and Lake Issyk where the 1963 Kazakhstan disaster occurred.",
+      "lake_count": 4,
+      "manifest_url": "http://127.0.0.1:8741/registry/central_asia/manifest.json",
+      "lakes_url": "http://127.0.0.1:8741/registry/central_asia/lakes.json",
+      "sha256": "c7483c39a9743599a59d1da033d003849f2b27771b96e1dc750efb0feb4113b6",
+      "released": "2026-04-12"
+    }
+  ]
+}

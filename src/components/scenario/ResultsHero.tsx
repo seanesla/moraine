@@ -13,12 +13,8 @@ export default function ResultsHero({ result }: ResultsHeroProps) {
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-red-500/5 to-orange-500/5 pointer-events-none" />
       <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-red-500/[0.06] blur-[80px] pointer-events-none" />
 
-      {/* Alert header */}
+      {/* Header */}
       <div className="relative z-10 mb-5">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-bold uppercase tracking-widest mb-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
-          GLOF Alert
-        </div>
         <h2 className="text-xl font-bold text-text-primary">
           Scenario Results
         </h2>

@@ -1,0 +1,600 @@
+{
+  "description": "Potentially dangerous glacial lakes in the Hindu Kush Himalaya region (Nepal, Bhutan, N. India, Tibet). Parameters are best estimates from published research. v1.2.0 adds Cirenmaco (1981 Tibet GLOF).",
+  "lakes": [
+    {
+      "id": "imja",
+      "name": "Imja Tsho",
+      "country": "Nepal",
+      "region": "Khumbu, Everest",
+      "lat": 27.8986,
+      "lon": 86.9222,
+      "elevation_m": 5010,
+      "volume_m3": 61700000,
+      "dam_height_m": 45,
+      "risk_rank": "I",
+      "valley_slope": 0.04,
+      "channel_width_m": 40,
+      "channel_depth_m": 5,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Dingboche",
+          "name_nepali": "डिङ्बोचे",
+          "distance_km": 7,
+          "elevation_m": 4410,
+          "population": 300,
+          "lat": 27.8955,
+          "lon": 86.8318
+        },
+        {
+          "name": "Pangboche",
+          "name_nepali": "पाङ्बोचे",
+          "distance_km": 12,
+          "elevation_m": 3985,
+          "population": 400,
+          "lat": 27.8569,
+          "lon": 86.7936
+        },
+        {
+          "name": "Namche Bazaar",
+          "name_nepali": "नाम्चे बजार",
+          "distance_km": 25,
+          "elevation_m": 3440,
+          "population": 1600,
+          "lat": 27.8069,
+          "lon": 86.7141
+        },
+        {
+          "name": "Lukla",
+          "name_nepali": "लुक्ला",
+          "distance_km": 40,
+          "elevation_m": 2860,
+          "population": 600,
+          "lat": 27.6868,
+          "lon": 86.7305
+        }
+      ]
+    },
+    {
+      "id": "lower_barun",
+      "name": "Lower Barun Glacial Lake",
+      "country": "Nepal",
+      "region": "Makalu-Barun",
+      "lat": 27.817,
+      "lon": 87.091,
+      "elevation_m": 4850,
+      "volume_m3": 110000000,
+      "dam_height_m": 104,
+      "risk_rank": "I",
+      "valley_slope": 0.05,
+      "channel_width_m": 30,
+      "channel_depth_m": 5,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Barun Bazaar",
+          "name_nepali": "बरुण बजार",
+          "distance_km": 20,
+          "elevation_m": 3800,
+          "population": 200,
+          "lat": 27.765,
+          "lon": 87.055
+        },
+        {
+          "name": "Num",
+          "name_nepali": "नुम",
+          "distance_km": 45,
+          "elevation_m": 1560,
+          "population": 500,
+          "lat": 27.618,
+          "lon": 87.067
+        },
+        {
+          "name": "Khandbari",
+          "name_nepali": "खाँडबारी",
+          "distance_km": 75,
+          "elevation_m": 1040,
+          "population": 8000,
+          "lat": 27.378,
+          "lon": 87.014
+        }
+      ]
+    },
+    {
+      "id": "tsho_rolpa",
+      "name": "Tsho Rolpa",
+      "country": "Nepal",
+      "region": "Rolwaling, Dolakha",
+      "lat": 27.862,
+      "lon": 86.477,
+      "elevation_m": 4580,
+      "volume_m3": 80000000,
+      "dam_height_m": 55,
+      "risk_rank": "I",
+      "valley_slope": 0.045,
+      "channel_width_m": 35,
+      "channel_depth_m": 5,
+      "manning_n": 0.06,
+      "villages": [
+        {
+          "name": "Na",
+          "name_nepali": "ना",
+          "distance_km": 5,
+          "elevation_m": 4180,
+          "population": 100,
+          "lat": 27.853,
+          "lon": 86.435
+        },
+        {
+          "name": "Beding",
+          "name_nepali": "बेदिङ",
+          "distance_km": 10,
+          "elevation_m": 3740,
+          "population": 300,
+          "lat": 27.837,
+          "lon": 86.389
+        },
+        {
+          "name": "Simigaon",
+          "name_nepali": "सिमिगाउँ",
+          "distance_km": 25,
+          "elevation_m": 2000,
+          "population": 600,
+          "lat": 27.815,
+          "lon": 86.32
+        }
+      ]
+    },
+    {
+      "id": "thulagi",
+      "name": "Thulagi Glacial Lake",
+      "country": "Nepal",
+      "region": "Manang, Annapurna",
+      "lat": 28.488,
+      "lon": 84.428,
+      "elevation_m": 4060,
+      "volume_m3": 35600000,
+      "dam_height_m": 40,
+      "risk_rank": "I",
+      "valley_slope": 0.05,
+      "channel_width_m": 30,
+      "channel_depth_m": 4,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Dharapani",
+          "name_nepali": "धारापानी",
+          "distance_km": 15,
+          "elevation_m": 1920,
+          "population": 400,
+          "lat": 28.471,
+          "lon": 84.453
+        },
+        {
+          "name": "Tal",
+          "name_nepali": "ताल",
+          "distance_km": 22,
+          "elevation_m": 1700,
+          "population": 300,
+          "lat": 28.435,
+          "lon": 84.465
+        }
+      ]
+    },
+    {
+      "id": "chorabari",
+      "name": "Chorabari Lake (Kedarnath)",
+      "country": "India",
+      "region": "Uttarakhand",
+      "lat": 30.735,
+      "lon": 79.067,
+      "elevation_m": 3900,
+      "volume_m3": 3800000,
+      "dam_height_m": 20,
+      "risk_rank": "Historical event (2013)",
+      "valley_slope": 0.08,
+      "channel_width_m": 15,
+      "channel_depth_m": 3,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Kedarnath Temple",
+          "distance_km": 2,
+          "elevation_m": 3583,
+          "population": 500,
+          "lat": 30.7346,
+          "lon": 79.0669
+        },
+        {
+          "name": "Rambara",
+          "distance_km": 8,
+          "elevation_m": 2800,
+          "population": 200,
+          "lat": 30.697,
+          "lon": 79.053
+        },
+        {
+          "name": "Gaurikund",
+          "distance_km": 14,
+          "elevation_m": 1980,
+          "population": 1000,
+          "lat": 30.657,
+          "lon": 79.039
+        }
+      ]
+    },
+    {
+      "id": "dig_tsho",
+      "name": "Dig Tsho",
+      "country": "Nepal",
+      "region": "Khumbu, Langmoche",
+      "lat": 27.873,
+      "lon": 86.595,
+      "elevation_m": 4400,
+      "volume_m3": 5000000,
+      "dam_height_m": 50,
+      "risk_rank": "Historical event (1985)",
+      "valley_slope": 0.06,
+      "channel_width_m": 25,
+      "channel_depth_m": 4,
+      "manning_n": 0.08,
+      "villages": [
+        {
+          "name": "Thame",
+          "name_nepali": "थामे",
+          "distance_km": 6,
+          "elevation_m": 3800,
+          "population": 250,
+          "lat": 27.823,
+          "lon": 86.65
+        },
+        {
+          "name": "Namche Bazaar",
+          "name_nepali": "नाम्चे बजार",
+          "distance_km": 11,
+          "elevation_m": 3440,
+          "population": 1600,
+          "lat": 27.8069,
+          "lon": 86.7141
+        },
+        {
+          "name": "Jorsalle",
+          "name_nepali": "जोरसल्ले",
+          "distance_km": 18,
+          "elevation_m": 2740,
+          "population": 150,
+          "lat": 27.779,
+          "lon": 86.716
+        },
+        {
+          "name": "Phakding",
+          "name_nepali": "फाक्डिङ",
+          "distance_km": 30,
+          "elevation_m": 2610,
+          "population": 200,
+          "lat": 27.743,
+          "lon": 86.713
+        },
+        {
+          "name": "Jubing",
+          "name_nepali": "जुबिङ",
+          "distance_km": 60,
+          "elevation_m": 1680,
+          "population": 400,
+          "lat": 27.556,
+          "lon": 86.716
+        }
+      ]
+    },
+    {
+      "id": "south_lhonak",
+      "name": "South Lhonak Lake",
+      "country": "India",
+      "region": "Sikkim, North District",
+      "lat": 27.9142,
+      "lon": 88.3315,
+      "elevation_m": 5200,
+      "volume_m3": 50000000,
+      "dam_height_m": 80,
+      "risk_rank": "Historical event (2023)",
+      "valley_slope": 0.05,
+      "channel_width_m": 40,
+      "channel_depth_m": 6,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Lachen",
+          "distance_km": 38,
+          "elevation_m": 2750,
+          "population": 1100,
+          "lat": 27.722,
+          "lon": 88.556
+        },
+        {
+          "name": "Chungthang",
+          "distance_km": 68,
+          "elevation_m": 1790,
+          "population": 4000,
+          "lat": 27.6045,
+          "lon": 88.645
+        },
+        {
+          "name": "Mangan",
+          "distance_km": 110,
+          "elevation_m": 950,
+          "population": 5000,
+          "lat": 27.508,
+          "lon": 88.529
+        },
+        {
+          "name": "Singtam",
+          "distance_km": 165,
+          "elevation_m": 350,
+          "population": 6500,
+          "lat": 27.236,
+          "lon": 88.476
+        },
+        {
+          "name": "Rangpo",
+          "distance_km": 185,
+          "elevation_m": 300,
+          "population": 8500,
+          "lat": 27.177,
+          "lon": 88.538
+        }
+      ]
+    },
+    {
+      "id": "lugge_tsho",
+      "name": "Lugge Tsho",
+      "country": "Bhutan",
+      "region": "Lunana, Gasa",
+      "lat": 28.095,
+      "lon": 90.287,
+      "elevation_m": 4520,
+      "volume_m3": 100000000,
+      "dam_height_m": 70,
+      "risk_rank": "Historical event (1994)",
+      "valley_slope": 0.045,
+      "channel_width_m": 35,
+      "channel_depth_m": 5,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Thanza",
+          "distance_km": 8,
+          "elevation_m": 4080,
+          "population": 200,
+          "lat": 28.051,
+          "lon": 90.263
+        },
+        {
+          "name": "Lhedi",
+          "distance_km": 16,
+          "elevation_m": 3840,
+          "population": 150,
+          "lat": 28.024,
+          "lon": 90.173
+        },
+        {
+          "name": "Laya",
+          "distance_km": 50,
+          "elevation_m": 3840,
+          "population": 800,
+          "lat": 27.975,
+          "lon": 89.715
+        },
+        {
+          "name": "Punakha",
+          "distance_km": 100,
+          "elevation_m": 1200,
+          "population": 6300,
+          "lat": 27.591,
+          "lon": 89.878
+        },
+        {
+          "name": "Wangdue Phodrang",
+          "distance_km": 110,
+          "elevation_m": 1240,
+          "population": 8000,
+          "lat": 27.486,
+          "lon": 89.9
+        }
+      ]
+    },
+    {
+      "id": "raphstreng_tsho",
+      "name": "Raphstreng Tsho",
+      "country": "Bhutan",
+      "region": "Lunana, Gasa",
+      "lat": 28.105,
+      "lon": 90.251,
+      "elevation_m": 4360,
+      "volume_m3": 65000000,
+      "dam_height_m": 80,
+      "risk_rank": "I",
+      "valley_slope": 0.045,
+      "channel_width_m": 35,
+      "channel_depth_m": 5,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Thanza",
+          "distance_km": 7,
+          "elevation_m": 4080,
+          "population": 200,
+          "lat": 28.051,
+          "lon": 90.263
+        },
+        {
+          "name": "Lhedi",
+          "distance_km": 15,
+          "elevation_m": 3840,
+          "population": 150,
+          "lat": 28.024,
+          "lon": 90.173
+        },
+        {
+          "name": "Laya",
+          "distance_km": 49,
+          "elevation_m": 3840,
+          "population": 800,
+          "lat": 27.975,
+          "lon": 89.715
+        },
+        {
+          "name": "Punakha",
+          "distance_km": 99,
+          "elevation_m": 1200,
+          "population": 6300,
+          "lat": 27.591,
+          "lon": 89.878
+        }
+      ]
+    },
+    {
+      "id": "longbasaba",
+      "name": "Longbasaba Lake",
+      "country": "China",
+      "region": "Tibet, Dinggye County",
+      "lat": 27.9547,
+      "lon": 88.082,
+      "elevation_m": 5700,
+      "volume_m3": 64000000,
+      "dam_height_m": 60,
+      "risk_rank": "I",
+      "valley_slope": 0.05,
+      "channel_width_m": 30,
+      "channel_depth_m": 5,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Chentang",
+          "distance_km": 22,
+          "elevation_m": 4200,
+          "population": 300,
+          "lat": 27.881,
+          "lon": 88.022
+        },
+        {
+          "name": "Dinggye",
+          "distance_km": 60,
+          "elevation_m": 4300,
+          "population": 2000,
+          "lat": 28.392,
+          "lon": 87.746
+        },
+        {
+          "name": "Riwu",
+          "distance_km": 90,
+          "elevation_m": 3950,
+          "population": 500,
+          "lat": 28.085,
+          "lon": 87.58
+        }
+      ]
+    },
+    {
+      "id": "gelhaipuco",
+      "name": "Gelhaipuco",
+      "country": "China",
+      "region": "Tibet, Nyalam County (Poiqu basin)",
+      "lat": 28.27,
+      "lon": 85.93,
+      "elevation_m": 5000,
+      "volume_m3": 25000000,
+      "dam_height_m": 35,
+      "risk_rank": "Historical event (1964)",
+      "valley_slope": 0.06,
+      "channel_width_m": 25,
+      "channel_depth_m": 4,
+      "manning_n": 0.08,
+      "villages": [
+        {
+          "name": "Nyalam",
+          "distance_km": 18,
+          "elevation_m": 3750,
+          "population": 1500,
+          "lat": 28.156,
+          "lon": 85.967
+        },
+        {
+          "name": "Zhangmu",
+          "distance_km": 38,
+          "elevation_m": 2300,
+          "population": 1500,
+          "lat": 27.992,
+          "lon": 85.974
+        },
+        {
+          "name": "Tatopani",
+          "name_nepali": "तातोपानी",
+          "distance_km": 42,
+          "elevation_m": 1500,
+          "population": 700,
+          "lat": 27.961,
+          "lon": 85.91
+        },
+        {
+          "name": "Barhabise",
+          "name_nepali": "बाह्रबिसे",
+          "distance_km": 75,
+          "elevation_m": 820,
+          "population": 4500,
+          "lat": 27.777,
+          "lon": 85.893
+        }
+      ]
+    },
+    {
+      "id": "cirenmaco",
+      "name": "Cirenmaco",
+      "country": "China",
+      "region": "Tibet (Nyalam County, near Tibet-Nepal border)",
+      "lat": 28.057,
+      "lon": 85.953,
+      "elevation_m": 4600,
+      "volume_m3": 18250000,
+      "dam_height_m": 60,
+      "risk_rank": "I",
+      "valley_slope": 0.05,
+      "channel_width_m": 30,
+      "channel_depth_m": 5,
+      "manning_n": 0.07,
+      "villages": [
+        {
+          "name": "Zhangmu",
+          "distance_km": 35,
+          "elevation_m": 2300,
+          "population": 600,
+          "lat": 27.992,
+          "lon": 85.976
+        },
+        {
+          "name": "Nyalam",
+          "distance_km": 20,
+          "elevation_m": 3750,
+          "population": 1500,
+          "lat": 28.182,
+          "lon": 85.967
+        },
+        {
+          "name": "Kodari",
+          "distance_km": 42,
+          "elevation_m": 1873,
+          "population": 1100,
+          "lat": 27.956,
+          "lon": 85.965
+        },
+        {
+          "name": "Tatopani",
+          "distance_km": 48,
+          "elevation_m": 1660,
+          "population": 800,
+          "lat": 27.943,
+          "lon": 85.922
+        }
+      ]
+    }
+  ]
+}

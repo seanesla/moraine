@@ -79,3 +79,90 @@ class Lake(BaseModel):
     channel_depth_m: float
     manning_n: float
     villages: list[LakeVillage]
+    # Id of the pack this lake came from. Optional for backwards
+    # compatibility with any caller that constructs a Lake by hand;
+    # populated automatically when lakes are loaded via the pack system
+    # so the frontend can filter by active region.
+    pack_id: str | None = None
+
+
+class RegionBounds(BaseModel):
+    min_lat: float
+    max_lat: float
+    min_lon: float
+    max_lon: float
+
+
+class PackManifest(BaseModel):
+    id: str
+    name: str
+    description: str
+    version: str
+    last_updated: str
+    source: str
+    source_url: str | None = None
+    lake_count: int
+    region_bounds: RegionBounds | None = None
+    # size_bytes and sha256 are optional because hand-authored packs may
+    # skip them; the remote update system in Phase 4 will always populate them.
+    size_bytes: int | None = None
+    sha256: str | None = None
+
+
+class Pack(BaseModel):
+    manifest: PackManifest
+    is_bundled: bool
+    is_user_installed: bool
+    # Absolute path to the pack directory on disk. Kept internal — the
+    # /api/packs router will strip this before returning to the client.
+    path: str
+
+
+# ── Phase 4: Remote update schemas ────────────────────────────────────────
+
+
+class RemotePackEntry(BaseModel):
+    """One entry in the remote registry's index.json."""
+    id: str
+    version: str
+    name: str
+    description: str
+    lake_count: int
+    manifest_url: str
+    lakes_url: str
+    sha256: str
+    released: str  # ISO date
+
+
+class PackUpdate(BaseModel):
+    """An update available for an already-installed pack."""
+    id: str
+    name: str
+    installed_version: str
+    available_version: str
+    lake_count: int
+    released: str
+
+
+class UpdateReport(BaseModel):
+    """Result of GET /api/packs/check_updates."""
+    checked_at: str
+    registry_url: str
+    updates_available: list[PackUpdate]
+    new_packs: list[RemotePackEntry]
+    already_current: list[str]
+    error: str | None = None
+
+
+class InstallRequest(BaseModel):
+    pack_id: str
+
+
+class InstallResult(BaseModel):
+    """Result of POST /api/packs/install."""
+    success: bool
+    pack_id: str
+    installed_version: str | None = None
+    installed_lake_count: int | None = None
+    install_path: str | None = None
+    error: str | None = None

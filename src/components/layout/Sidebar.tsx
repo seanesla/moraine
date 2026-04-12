@@ -2,12 +2,44 @@ import { useEffect } from "react";
 import { Play, Loader2 } from "lucide-react";
 import GlassCard from "../common/GlassCard";
 import { useAppStore } from "../../stores/appStore";
+import { usePackStore, useActiveLakes } from "../../stores/packStore";
 import { useScenarioStore } from "../../stores/scenarioStore";
 
 export default function Sidebar() {
-  const { lakes, selectedLakeId, setSelectedLake } = useAppStore();
+  const selectedLakeId = useAppStore((s) => s.selectedLakeId);
+  const setSelectedLake = useAppStore((s) => s.setSelectedLake);
+  const setSettingsOpen = useAppStore((s) => s.setSettingsOpen);
+  const packs = usePackStore((s) => s.packs);
+  const activeRegionIds = usePackStore((s) => s.activeRegionIds);
+  const activeLakes = useActiveLakes();
   const { params, setParam, setAllParams, isRunning, runScenario, clearResult } = useScenarioStore();
-  const selectedLake = lakes.find((l) => l.id === selectedLakeId);
+  const selectedLake = activeLakes.find((l) => l.id === selectedLakeId);
+
+  // If the currently selected lake gets filtered out (its region was toggled
+  // off), snap selection to the first visible lake so the UI stays coherent.
+  // If ALL regions are toggled off, clear the selection AND the cached
+  // scenario result so the dashboard doesn't keep rendering a now-hidden
+  // lake (DA #15 finding).
+  useEffect(() => {
+    if (activeLakes.length === 0) {
+      if (selectedLakeId !== null) {
+        setSelectedLake(null);
+        clearResult();
+      }
+      return;
+    }
+    if (!selectedLakeId || !activeLakes.some((l) => l.id === selectedLakeId)) {
+      setSelectedLake(activeLakes[0].id);
+    }
+  }, [activeLakes, selectedLakeId, setSelectedLake, clearResult]);
+
+  const activeRegionCount = activeRegionIds.length;
+  const totalRegionCount = packs.length;
+  // Only show the "no active regions" empty state when there actually ARE
+  // installed packs but the user has toggled them all off. If the backend
+  // hasn't served any packs at all, fall through to the normal lake list
+  // (degraded mode — better than locking the user out).
+  const showRegionEmptyState = totalRegionCount > 0 && activeRegionCount === 0;
 
   useEffect(() => {
     if (selectedLake) {
@@ -43,15 +75,43 @@ export default function Sidebar() {
 
       {/* Lake selector */}
       <GlassCard variant="dense" hover={false} className="p-4 flex flex-col gap-3">
-        <SectionLabel>Lake</SectionLabel>
-        <select value={selectedLakeId ?? ""} onChange={(e) => setSelectedLake(e.target.value)}>
-          {lakes.length === 0 && <option value="">Loading...</option>}
-          {lakes.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
-        </select>
-        {selectedLake && (
-          <span className="text-[10px] text-text-muted leading-snug">
-            {selectedLake.region} · {selectedLake.elevation_m.toLocaleString()}m · Risk {selectedLake.risk_rank}
-          </span>
+        <div className="flex items-center justify-between">
+          <SectionLabel>Lake</SectionLabel>
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="text-[9px] uppercase tracking-[0.1em] text-text-muted/80 hover:text-primary transition-colors duration-150 cursor-pointer"
+          >
+            Manage
+          </button>
+        </div>
+        {showRegionEmptyState ? (
+          <div className="text-[11px] text-text-muted leading-snug py-1">
+            No active regions — enable one in{" "}
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="text-primary hover:underline cursor-pointer"
+            >
+              settings
+            </button>
+            .
+          </div>
+        ) : (
+          <>
+            <select value={selectedLakeId ?? ""} onChange={(e) => setSelectedLake(e.target.value)}>
+              {activeLakes.length === 0 && <option value="">Loading...</option>}
+              {activeLakes.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
+            </select>
+            {totalRegionCount > 0 && (
+              <span className="text-[10px] text-text-muted leading-snug">
+                {activeLakes.length} lake{activeLakes.length === 1 ? "" : "s"} from {activeRegionCount} of {totalRegionCount} region{totalRegionCount === 1 ? "" : "s"}
+              </span>
+            )}
+            {selectedLake && (
+              <span className="text-[10px] text-text-muted leading-snug">
+                {selectedLake.region} · {selectedLake.elevation_m.toLocaleString()}m · Risk {selectedLake.risk_rank}
+              </span>
+            )}
+          </>
         )}
       </GlassCard>
 
