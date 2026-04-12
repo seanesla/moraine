@@ -7,3 +7,5 @@ dist/
 build/
 .env
 CLAUDE.md
+gemmahackathonrules.md
+data/tiles/
