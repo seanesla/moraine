@@ -15,15 +15,18 @@ Usage:
 """
 
 import json
+import os
 import ollama
 from gemma_prompts import SYSTEM_PROMPT
 from gemma_tools import TOOLS, execute_tool
+
+DEFAULT_MODEL = os.environ.get("GLOF_MODEL", "gemma4:e4b")
 
 
 class OllamaRunner:
     """Manages a conversation with Gemma via Ollama, including tool calls."""
 
-    def __init__(self, model: str = "gemma3:4b"):
+    def __init__(self, model: str = DEFAULT_MODEL):
         """
         Initialize the runner.
 

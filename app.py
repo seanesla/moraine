@@ -1,25 +1,26 @@
 """
-GLOF Downstream Arrival Time Calculator — Streamlit App
+Moraine — GLOF Disaster Response Agent
 
-The main demo UI. Shows:
-1. Sidebar with lake/valley parameter inputs
-2. Gemma's chain-of-thought reasoning
-3. Countdown cards with bilingual village names
-4. Live countdown clock
-5. Nepali emergency alert generation
-6. Chat for follow-up questions
+Conversation-first Streamlit app where Gemma is the primary interface.
+The sidebar provides quick parameter inputs, but the main panel is a
+chat with Gemma that renders inline visualizations (countdown cards,
+arrival time charts, flood path maps) when simulations are run.
 """
 
 import json
 import os
 import time
 import streamlit as st
+import plotly.graph_objects as go
+import folium
+from streamlit_folium import st_folium
 from glof_core import compute_full_scenario, validate_inputs
+from tile_manager import tiles_exist, download_tiles, start_tile_server, get_lake_bounds, count_tiles
 
 # ── Page config ──────────────────────────────────────────────────────────────
 
 st.set_page_config(
-    page_title="GLOF Arrival Time Calculator",
+    page_title="Moraine — GLOF Response Agent",
     page_icon="🏔️",
     layout="wide",
 )
@@ -33,8 +34,16 @@ with open(os.path.join(DATA_DIR, "lakes.json")) as f:
 
 LAKE_OPTIONS = {lake["name"]: lake for lake in LAKES_DB["lakes"]}
 
+# ── Session state initialization ─────────────────────────────────────────────
 
-# ── Custom CSS for the countdown display ─────────────────────────────────────
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "runner" not in st.session_state:
+    st.session_state.runner = None
+if "pending_sidebar_msg" not in st.session_state:
+    st.session_state.pending_sidebar_msg = None
+
+# ── Custom CSS ───────────────────────────────────────────────────────────────
 
 st.markdown("""
 <style>
@@ -123,25 +132,38 @@ st.markdown("""
         margin-top: 12px;
     }
 
-    .reasoning-box {
+    .welcome-card {
         background: #0f172a;
-        color: #a5f3fc;
-        padding: 20px;
-        border-radius: 10px;
-        font-family: 'Courier New', monospace;
-        font-size: 0.9rem;
-        line-height: 1.7;
-        white-space: pre-wrap;
         border: 1px solid #1e3a5f;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 12px;
+    }
+    .welcome-card h3 {
+        color: #a5f3fc;
+        margin-top: 0;
+    }
+    .welcome-card p {
+        color: #94a3b8;
     }
 </style>
 """, unsafe_allow_html=True)
 
 
-# ── Helper functions ─────────────────────────────────────────────────────────
+# ── Severity color map ────────────────────────────────────────────────���──────
+
+SEVERITY_COLORS = {
+    "EXTREME": "#dc2626",
+    "SEVERE": "#ea580c",
+    "HIGH": "#f59e0b",
+    "MODERATE": "#eab308",
+    "LOW": "#22c55e",
+}
+
+
+# ── Visualization helpers ────────────────────────────────────────────────────
 
 def severity_css_class(severity: str) -> str:
-    """Map severity string to CSS class."""
     return f"severity-{severity.lower()}"
 
 
@@ -163,7 +185,7 @@ def render_countdown_card(village: dict):
             </div>
             <div style="text-align: right;">
                 <div class="arrival-time">{village['arrival_time_min']:.0f} min</div>
-                <div class="arrival-range">Range: {village['arrival_time_low_min']:.0f}–{village['arrival_time_high_min']:.0f} min</div>
+                <div class="arrival-range">Range: {village['arrival_time_low_min']:.0f}\u2013{village['arrival_time_high_min']:.0f} min</div>
                 <div class="village-meta">{village['severity']}</div>
             </div>
         </div>
@@ -171,64 +193,235 @@ def render_countdown_card(village: dict):
     """, unsafe_allow_html=True)
 
 
-def generate_reasoning_text(result: dict, lake_name: str) -> str:
-    """Generate a chain-of-thought style explanation of the calculation."""
-    p = result["parameters"]
-    d = result["discharge"]
+def render_arrival_chart(result: dict):
+    """Render a plotly horizontal bar chart of arrival times by village."""
+    villages = result["villages"]
+    names = [f"{v['name']}" for v in villages]
+    times = [v["arrival_time_min"] for v in villages]
+    lows = [v["arrival_time_low_min"] for v in villages]
+    highs = [v["arrival_time_high_min"] for v in villages]
+    colors = [SEVERITY_COLORS.get(v["severity"], "#888") for v in villages]
 
-    text = f"""Step 1: Estimating peak discharge for {lake_name}
-  Lake volume V = {p['lake_volume_m3']:,.0f} m³
+    # Error bars: distance from center to low/high
+    error_minus = [t - l for t, l in zip(times, lows)]
+    error_plus = [h - t for t, h in zip(times, highs)]
 
-  Popov (1991):  Q_peak = 0.0048 × V^0.896 = {d['popov_m3s']:,.0f} m³/s
-  Huggel (2002): Q_peak = 0.00077 × V^1.017 = {d['huggel_m3s']:,.0f} m³/s
-  Ensemble average: {d['average_m3s']:,.0f} m³/s (spread: {d['spread_percent']:.0f}%)
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        y=names,
+        x=times,
+        orientation="h",
+        marker_color=colors,
+        error_x=dict(
+            type="data",
+            symmetric=False,
+            array=error_plus,
+            arrayminus=error_minus,
+            color="rgba(255,255,255,0.5)",
+            thickness=2,
+            width=6,
+        ),
+        text=[f"{t:.0f} min" for t in times],
+        textposition="outside",
+        textfont=dict(color="white", size=13),
+    ))
 
-Step 2: Calculating flood wave velocity (Manning's equation)
-  Channel width W = {p['channel_width_m']} m
-  Channel depth D = {p['channel_depth_m']} m
-  Hydraulic radius R = (W×D)/(W+2D) = {result['hydraulic_radius_m']:.3f} m
-  Manning's n = {p['manning_n']} (mountain river with boulders)
-  Valley slope S = {p['valley_slope']}
+    fig.update_layout(
+        title=dict(text="Flood Arrival Time by Village", font=dict(color="white", size=16)),
+        xaxis=dict(
+            title="Minutes after breach",
+            color="white",
+            gridcolor="rgba(255,255,255,0.1)",
+        ),
+        yaxis=dict(color="white", autorange="reversed"),
+        plot_bgcolor="#0f172a",
+        paper_bgcolor="#0f172a",
+        font=dict(color="white"),
+        margin=dict(l=10, r=40, t=50, b=40),
+        height=max(250, len(villages) * 70 + 100),
+    )
 
-  V = (1/n) × R^(2/3) × S^(1/2) = {result['flow_velocity_mps']:.2f} m/s
+    st.plotly_chart(fig, use_container_width=True)
 
-Step 3: Wave front speed
-  Wave multiplier = {p['wave_multiplier']}× (empirical dam-break)
-  Wave speed = {result['flow_velocity_mps']:.2f} × {p['wave_multiplier']} = {result['wave_speed_mps']:.2f} m/s
 
-Step 4: Arrival times for downstream villages"""
+def render_flood_map(result: dict, lake_data: dict):
+    """Render a folium map with offline tiles showing lake and village locations."""
+    lake_lat = lake_data.get("lat")
+    lake_lon = lake_data.get("lon")
+    lake_id = lake_data.get("id")
+    if not lake_lat or not lake_lon:
+        return
 
+    # Collect villages with coordinates
+    villages_with_coords = []
     for v in result["villages"]:
-        text += f"""
-  {v['name']} ({v['distance_km']} km):
-    Time = {v['distance_km']*1000:.0f}m ÷ {result['wave_speed_mps']:.2f} m/s = {v['arrival_time_min']:.1f} minutes
-    Attenuated discharge: {v['attenuated_discharge_m3s']:,.0f} m³/s → {v['severity']}"""
+        matching = [lv for lv in lake_data.get("villages", []) if lv["name"] == v["name"]]
+        if matching and "lat" in matching[0]:
+            villages_with_coords.append({**v, "lat": matching[0]["lat"], "lon": matching[0]["lon"]})
 
-    return text
+    if not villages_with_coords:
+        return
+
+    # Determine tile source — local if available, otherwise OpenTopoMap online
+    tile_url = None
+    tile_attr = "OpenTopoMap contributors"
+    if lake_id and tiles_exist(lake_id):
+        tile_url = start_tile_server(lake_id)
+
+    # Center between lake and villages
+    all_lats = [lake_lat] + [v["lat"] for v in villages_with_coords]
+    all_lons = [lake_lon] + [v["lon"] for v in villages_with_coords]
+    center_lat = sum(all_lats) / len(all_lats)
+    center_lon = sum(all_lons) / len(all_lons)
+
+    if tile_url:
+        m = folium.Map(location=[center_lat, center_lon], zoom_start=11,
+                       tiles=tile_url, attr=tile_attr)
+    else:
+        m = folium.Map(location=[center_lat, center_lon], zoom_start=11,
+                       tiles="OpenStreetMap")
+
+    # Lake marker
+    folium.CircleMarker(
+        location=[lake_lat, lake_lon],
+        radius=12,
+        color="#3b82f6",
+        fill=True,
+        fill_color="#3b82f6",
+        fill_opacity=0.8,
+        popup=folium.Popup(f"<b>{lake_data['name']}</b><br/>Glacial Lake", max_width=200),
+    ).add_to(m)
+
+    # Village markers — colored by severity, sized by population
+    for v in villages_with_coords:
+        color = SEVERITY_COLORS.get(v["severity"], "#888888")
+        pop = v.get("population", 100)
+        radius = max(6, min(18, pop / 100))
+        nepali = v.get("name_nepali", "")
+        nepali_html = f"<br/>{nepali}" if nepali else ""
+
+        folium.CircleMarker(
+            location=[v["lat"], v["lon"]],
+            radius=radius,
+            color=color,
+            fill=True,
+            fill_color=color,
+            fill_opacity=0.8,
+            popup=folium.Popup(
+                f"<b>{v['name']}</b>{nepali_html}<br/>"
+                f"Arrival: {v['arrival_time_min']:.0f} min<br/>"
+                f"Severity: {v['severity']}<br/>"
+                f"Pop: ~{pop:,}",
+                max_width=200,
+            ),
+        ).add_to(m)
+
+        # Line from lake to village
+        folium.PolyLine(
+            locations=[[lake_lat, lake_lon], [v["lat"], v["lon"]]],
+            color=color,
+            weight=2,
+            opacity=0.6,
+            dash_array="5",
+        ).add_to(m)
+
+    st_folium(m, use_container_width=True, height=400, returned_objects=[])
 
 
-def generate_nepali_alert(result: dict, lake_name: str) -> str:
-    """Generate an emergency alert in Nepali (Devanagari script)."""
-    alert = f"⚠️ चेतावनी: {lake_name} बाट ग्लेशियल झील विस्फोट बाढी (GLOF)!\n\n"
-    alert += "तुरुन्तै उच्च भूमिमा जानुहोस्!\n\n"
+def render_tool_result(tool_name: str, result: dict, lake_data: dict = None):
+    """Dispatch visualization rendering based on tool name."""
+    if tool_name == "calculate_glof_scenario":
+        # Alert header
+        st.markdown(f"""
+        <div class="alert-header">
+            <h1>\u26a0\ufe0f GLOF SIMULATION RESULT</h1>
+            <p>Peak discharge: {result['discharge']['average_m3s']:,.0f} m\u00b3/s |
+            Wave speed: {result['wave_speed_mps']:.1f} m/s |
+            Flow velocity: {result['flow_velocity_mps']:.1f} m/s</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    for v in result["villages"]:
-        nepali_name = v.get("name_nepali", v["name"])
-        alert += (
-            f"📍 {nepali_name} ({v['name']}): "
-            f"{v['arrival_time_min']:.0f} मिनेटमा बाढी आइपुग्छ "
-            f"({v['distance_km']} कि.मी.)\n"
-        )
+        # Countdown cards
+        for village in result["villages"]:
+            render_countdown_card(village)
 
-    alert += "\n⚠️ यो अनुमान मात्र हो। तुरुन्तै सुरक्षित स्थानमा जानुहोस्।"
-    return alert
+        # Arrival time chart
+        render_arrival_chart(result)
+
+        # Map (if we have coordinate data)
+        if lake_data:
+            render_flood_map(result, lake_data)
+
+    elif tool_name == "validate_inputs":
+        if result.get("warnings"):
+            for w in result["warnings"]:
+                st.warning(w)
+        else:
+            st.success("All parameters look reasonable.")
 
 
-# ── Sidebar: inputs ──────────────────────────────────────────────────────────
+# ── Initialize Gemma runner ──────────────────────────────────────────────────
+
+def get_runner():
+    """Get or create the runner instance. Prefers Gemini API if key is set, falls back to Ollama."""
+    if st.session_state.runner is None:
+        # Try Google AI Studio first (faster for testing)
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            from dotenv import load_dotenv
+            load_dotenv()
+            api_key = os.environ.get("GEMINI_API_KEY")
+
+        if api_key:
+            try:
+                from gemini_runner import GeminiRunner
+                st.session_state.runner = GeminiRunner()
+                return st.session_state.runner
+            except Exception as e:
+                st.sidebar.warning(f"Gemini init failed: {e}")
+
+        # Fall back to Ollama
+        try:
+            from ollama_runner import OllamaRunner
+            st.session_state.runner = OllamaRunner()
+        except Exception:
+            st.session_state.runner = None
+    return st.session_state.runner
+
+
+def process_message(user_message: str):
+    """Send a message to Gemma, handle response and tool calls."""
+    runner = get_runner()
+    if runner is None:
+        return {
+            "response": "Could not connect to Ollama. Make sure it's running: `ollama serve`",
+            "tool_calls": [],
+            "error": "Ollama not available",
+        }
+
+    return runner.chat(user_message)
+
+
+def find_lake_for_result(tool_calls: list) -> dict | None:
+    """Try to find which lake was used in a simulation from the tool call arguments."""
+    for tc in tool_calls:
+        if tc["name"] == "calculate_glof_scenario":
+            args = tc.get("arguments", {})
+            villages_arg = args.get("villages", [])
+            # Match against lake database by checking village names
+            for lake in LAKES_DB["lakes"]:
+                lake_village_names = {v["name"] for v in lake["villages"]}
+                arg_village_names = {v["name"] for v in villages_arg}
+                if arg_village_names & lake_village_names:
+                    return lake
+    return None
+
+
+# ── Sidebar ──────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.title("GLOF Calculator")
-    st.caption("Glacial Lake Outburst Flood Arrival Time Estimator")
+    st.title("Moraine")
+    st.caption("GLOF Disaster Response Agent")
 
     st.divider()
 
@@ -243,9 +436,8 @@ with st.sidebar:
     st.divider()
     st.subheader("Lake & Valley Parameters")
 
-    # Editable parameters (pre-filled from selected lake)
     lake_volume = st.number_input(
-        "Lake Volume (million m³)",
+        "Lake Volume (million m\u00b3)",
         min_value=0.1,
         max_value=1000.0,
         value=selected_lake["volume_m3"] / 1_000_000,
@@ -270,7 +462,6 @@ with st.sidebar:
         max_value=500.0,
         value=float(selected_lake["channel_width_m"]),
         step=5.0,
-        help="Width of the main river channel in meters",
     )
 
     channel_depth = st.number_input(
@@ -279,7 +470,6 @@ with st.sidebar:
         max_value=30.0,
         value=float(selected_lake["channel_depth_m"]),
         step=0.5,
-        help="Average depth of the river channel in meters",
     )
 
     manning_n = st.slider(
@@ -289,89 +479,168 @@ with st.sidebar:
         value=selected_lake["manning_n"],
         step=0.01,
         format="%.2f",
-        help="Roughness coefficient: 0.03=smooth, 0.07=mountain river, 0.12=debris flow",
+        help="0.03=smooth, 0.07=mountain river, 0.12=debris flow",
     )
 
     st.divider()
     st.subheader("Downstream Villages")
-    st.caption("Villages from the selected lake's database")
-
-    # Display villages
     for v in selected_lake["villages"]:
         nepali = v.get("name_nepali", "")
         label = f"{v['name']}" + (f" ({nepali})" if nepali else "")
-        st.text(f"  {label} — {v['distance_km']} km")
+        st.text(f"  {label} \u2014 {v['distance_km']} km")
 
     st.divider()
 
-    # The big red button
-    calculate_clicked = st.button(
-        "CALCULATE ARRIVAL TIMES",
-        type="primary",
-        use_container_width=True,
-    )
+    # Offline map tiles
+    st.subheader("Offline Map")
+    lake_id = selected_lake.get("id")
+    if lake_id and tiles_exist(lake_id):
+        st.success("Map tiles cached", icon="\u2705")
+    elif lake_id and selected_lake.get("lat"):
+        bounds = get_lake_bounds(selected_lake)
+        tile_count = count_tiles(bounds)
+        if st.button(f"Download Map Tiles (~{tile_count} tiles)", use_container_width=True):
+            progress = st.progress(0, text="Downloading tiles...")
+            def update_progress(done, total):
+                progress.progress(done / total, text=f"Downloading tiles... {done}/{total}")
+            download_tiles(lake_id, bounds, progress_callback=update_progress)
+            progress.empty()
+            st.success("Map tiles downloaded!", icon="\u2705")
+            st.rerun()
+    else:
+        st.caption("No coordinates available for this lake.")
+
+    st.divider()
+
+    # Sidebar "Run Scenario" button — injects into chat
+    if st.button("RUN SCENARIO", type="primary", use_container_width=True):
+        village_list = ", ".join(
+            f"{v['name']} ({v['distance_km']}km)" for v in selected_lake["villages"]
+        )
+        st.session_state.pending_sidebar_msg = (
+            f"Run a GLOF scenario for {selected_lake_name} with: "
+            f"volume={lake_volume_m3:,.0f} m\u00b3, slope={valley_slope}, "
+            f"width={channel_width}m, depth={channel_depth}m, "
+            f"Manning's n={manning_n}. "
+            f"Downstream villages: {village_list}"
+        )
 
 
 # ── Main panel ───────────────────────────────────────────────────────────────
 
-if calculate_clicked or st.session_state.get("has_results"):
+# Handle pending sidebar message
+if st.session_state.pending_sidebar_msg:
+    st.session_state.messages.append({
+        "role": "user",
+        "content": st.session_state.pending_sidebar_msg,
+    })
+    st.session_state.pending_sidebar_msg = None
 
-    # Run validation
-    warnings = validate_inputs(lake_volume_m3, valley_slope, channel_width, manning_n, channel_depth)
-    if warnings:
-        for w in warnings:
-            st.warning(w)
-
-    # Run calculation
-    result = compute_full_scenario(
-        lake_volume_m3=lake_volume_m3,
-        valley_slope=valley_slope,
-        channel_width_m=channel_width,
-        channel_depth_m=channel_depth,
-        manning_n=manning_n,
-        villages=selected_lake["villages"],
-    )
-
-    st.session_state["has_results"] = True
-    st.session_state["result"] = result
-
-    # ── Alert header ──
-    st.markdown(f"""
-    <div class="alert-header">
-        <h1>⚠️ GLOF ALERT: {selected_lake_name.upper()}</h1>
-        <p>Peak discharge: {result['discharge']['average_m3s']:,.0f} m³/s |
-        Wave speed: {result['wave_speed_mps']:.1f} m/s |
-        Flow velocity: {result['flow_velocity_mps']:.1f} m/s</p>
+# Welcome screen when no messages
+if not st.session_state.messages:
+    st.markdown("""
+    <div class="welcome-card">
+        <h3>Moraine \u2014 GLOF Disaster Response Agent</h3>
+        <p>I'm Moraine, a disaster response coordinator for Glacial Lake Outburst Floods.
+        I can simulate flood scenarios, generate evacuation plans, and create
+        emergency alerts in Nepali, Hindi, and English \u2014 all powered by Gemma running
+        locally via Ollama.</p>
+        <p style="color: #64748b; font-size: 0.85rem;">
+        Built for the Gemma 4 Good Hackathon \u2014 Global Resilience Track</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Countdown cards ──
-    for village in result["villages"]:
-        render_countdown_card(village)
-
-    # ── Gemma's reasoning (collapsible) ──
-    with st.expander("Show Calculation Reasoning (Chain of Thought)", expanded=False):
-        reasoning = generate_reasoning_text(result, selected_lake_name)
-        st.markdown(f'<div class="reasoning-box">{reasoning}</div>', unsafe_allow_html=True)
+    st.markdown("**Try asking:**")
+    cols = st.columns(3)
+    suggestions = [
+        "Imja Tsho just burst. How long until Namche is hit?",
+        "Generate an evacuation plan for Tsho Rolpa in Nepali",
+        "What would happen if Chorabari burst again like 2013?",
+    ]
+    for col, suggestion in zip(cols, suggestions):
+        with col:
+            if st.button(suggestion, use_container_width=True):
+                st.session_state.messages.append({"role": "user", "content": suggestion})
+                st.rerun()
 
     st.divider()
+    st.markdown("""
+    **How many minutes until the flood reaches your village?**
 
-    # ── Live countdown clock ──
-    col1, col2 = st.columns([1, 1])
+    There are **200+ dangerous glacial lakes** worldwide, and the communities
+    downstream often have **no warning system**. Moraine uses validated physics
+    (Popov 1991, Huggel 2002, Manning's equation) with Gemma to provide
+    intelligent, multilingual disaster response support.
 
-    with col1:
-        st.subheader("Live Countdown")
-        if result["villages"]:
-            first_village = result["villages"][0]
+    You can also use the sidebar to select a lake and run a scenario directly.
+    """)
+
+else:
+    # Render chat history
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+            # Render inline visualizations for assistant messages with tool calls
+            if msg["role"] == "assistant" and msg.get("tool_calls"):
+                lake_data = find_lake_for_result(msg["tool_calls"])
+                for tc in msg["tool_calls"]:
+                    render_tool_result(tc["name"], tc["result"], lake_data)
+
+    # Check if the last message is from the user and needs a response
+    if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
+        with st.chat_message("assistant"):
+            with st.spinner("Moraine is analyzing..."):
+                response = process_message(st.session_state.messages[-1]["content"])
+
+            if response["error"] and not response["response"]:
+                st.error(f"Error: {response['error']}")
+                st.info("Make sure Ollama is running: `ollama serve` then `ollama pull gemma3:4b`")
+                assistant_msg = {
+                    "role": "assistant",
+                    "content": f"I couldn't connect to my analysis engine. Error: {response['error']}",
+                    "tool_calls": [],
+                }
+            else:
+                st.markdown(response["response"])
+
+                # Render tool result visualizations inline
+                lake_data = find_lake_for_result(response.get("tool_calls", []))
+                for tc in response.get("tool_calls", []):
+                    render_tool_result(tc["name"], tc["result"], lake_data)
+
+                assistant_msg = {
+                    "role": "assistant",
+                    "content": response["response"],
+                    "tool_calls": response.get("tool_calls", []),
+                }
+
+            st.session_state.messages.append(assistant_msg)
+
+    # Live countdown clock (available when we have simulation results)
+    last_result = None
+    for msg in reversed(st.session_state.messages):
+        if msg.get("tool_calls"):
+            for tc in msg["tool_calls"]:
+                if tc["name"] == "calculate_glof_scenario":
+                    last_result = tc["result"]
+                    break
+        if last_result:
+            break
+
+    if last_result and last_result.get("villages"):
+        st.divider()
+        col1, col2 = st.columns([1, 1])
+
+        with col1:
+            st.subheader("Live Countdown")
             countdown_village = st.selectbox(
                 "Countdown for:",
-                options=[v["name"] for v in result["villages"]],
+                options=[v["name"] for v in last_result["villages"]],
                 index=0,
                 key="countdown_select",
             )
 
-            # Find the selected village
-            selected_v = next(v for v in result["villages"] if v["name"] == countdown_village)
+            selected_v = next(v for v in last_result["villages"] if v["name"] == countdown_village)
             total_seconds = int(selected_v["arrival_time_min"] * 60)
 
             if st.button("START COUNTDOWN", type="primary", key="start_countdown"):
@@ -398,105 +667,27 @@ if calculate_clicked or st.session_state.get("has_results"):
                         )
 
                     label_placeholder.markdown(
-                        f'<div class="countdown-village-label">{label} — {selected_v["distance_km"]} km downstream</div>',
+                        f'<div class="countdown-village-label">{label} \u2014 {selected_v["distance_km"]} km downstream</div>',
                         unsafe_allow_html=True,
                     )
                     time.sleep(1)
 
-    with col2:
-        st.subheader("Emergency Alert (Nepali)")
-        nepali_alert = generate_nepali_alert(result, selected_lake_name)
-        st.code(nepali_alert, language=None)
+        with col2:
+            st.subheader("Disclaimer")
+            st.markdown("""
+            <div class="disclaimer">
+                <strong>Disclaimer:</strong> This tool provides estimates based on simplified empirical models
+                (Popov 1991, Huggel 2002, Manning's equation). Actual flood behavior depends on dam breach
+                mechanism, debris content, channel geometry changes, tributary inflows, and other factors not
+                captured here. These estimates are for evacuation planning decision support only, not precise
+                predictions. Always follow official evacuation orders when available.
+            </div>
+            """, unsafe_allow_html=True)
 
-        st.subheader("Emergency Alert (English)")
-        english_alert = f"WARNING: Glacial Lake Outburst Flood from {selected_lake_name}!\n\n"
-        english_alert += "EVACUATE TO HIGH GROUND IMMEDIATELY!\n\n"
-        for v in result["villages"]:
-            english_alert += (
-                f"  {v['name']}: {v['arrival_time_min']:.0f} minutes "
-                f"({v['distance_km']} km) — {v['severity']}\n"
-            )
-        english_alert += "\nThese are estimates. Move to safety immediately."
-        st.code(english_alert, language=None)
+# ── Chat input (always at the bottom) ────────────────────────────────────────
 
-    # ── Disclaimer ──
-    st.markdown("""
-    <div class="disclaimer">
-        <strong>Disclaimer:</strong> This tool provides estimates based on simplified empirical models
-        (Popov 1991, Huggel 2002, Manning's equation). Actual flood behavior depends on dam breach
-        mechanism, debris content, channel geometry changes, tributary inflows, and other factors not
-        captured here. These estimates are for evacuation planning decision support only, not precise
-        predictions. Always follow official evacuation orders when available.
-    </div>
-    """, unsafe_allow_html=True)
+user_input = st.chat_input("Describe your scenario or ask about a glacial lake...")
 
-    st.divider()
-
-    # ── Chat with Gemma (optional, requires Ollama running) ──
-    st.subheader("Ask Follow-up Questions")
-    st.caption("Requires Ollama running locally with a Gemma model")
-
-    if "chat_messages" not in st.session_state:
-        st.session_state.chat_messages = []
-
-    user_question = st.chat_input("Ask a question (e.g., 'What if only half the lake drains?')")
-
-    if user_question:
-        st.session_state.chat_messages.append({"role": "user", "content": user_question})
-
-        try:
-            from ollama_runner import OllamaRunner
-
-            if "runner" not in st.session_state:
-                st.session_state.runner = OllamaRunner()
-
-            with st.spinner("Gemma is thinking..."):
-                response = st.session_state.runner.chat(user_question)
-
-            if response["error"]:
-                st.error(f"Ollama error: {response['error']}")
-                st.info("Make sure Ollama is running: `ollama serve` then `ollama pull gemma3:4b`")
-            else:
-                if response["tool_calls"]:
-                    st.info(f"Used tools: {', '.join(tc['name'] for tc in response['tool_calls'])}")
-                st.session_state.chat_messages.append({
-                    "role": "assistant",
-                    "content": response["response"],
-                })
-        except ImportError:
-            st.error("Ollama package not installed. Run: pip install ollama")
-        except Exception as e:
-            st.error(f"Error: {e}")
-            st.info("Make sure Ollama is running: `ollama serve` then `ollama pull gemma3:4b`")
-
-    # Display chat history
-    for msg in st.session_state.get("chat_messages", []):
-        with st.chat_message(msg["role"]):
-            st.write(msg["content"])
-
-else:
-    # Landing page when no calculation has been run yet
-    st.title("GLOF Downstream Arrival Time Calculator")
-    st.markdown("""
-    ### How many minutes until the flood reaches your village?
-
-    **Glacial Lake Outburst Floods (GLOFs)** are sudden, catastrophic floods caused by the
-    failure of natural dams holding back glacial lakes. There are **200+ dangerous glacial
-    lakes** worldwide, and the communities downstream often have **no warning system**.
-
-    This tool calculates estimated flood arrival times for downstream villages using
-    published hydrological equations, powered by **Gemma** for intelligent reasoning
-    and multilingual alerts.
-
-    ---
-
-    **How to use:**
-    1. Select a glacial lake from the sidebar (or adjust parameters manually)
-    2. Click **CALCULATE ARRIVAL TIMES**
-    3. See the countdown for each downstream village
-    4. Generate emergency alerts in Nepali and English
-
-    ---
-
-    *Built for the Gemma 4 Good Hackathon — Global Resilience Track*
-    """)
+if user_input:
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    st.rerun()
