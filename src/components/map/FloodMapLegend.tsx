@@ -109,11 +109,11 @@ export default function FloodMapLegend() {
             />
           </span>
           <span className="text-[9.5px] text-text-muted leading-snug italic">
-            Straight lines indicate{" "}
+            Stylized{" "}
             <span className="text-text-secondary font-semibold not-italic">
-              downstream distance
+              river paths
             </span>{" "}
-            — actual river path follows the valley.
+            — actual valleys may differ.
           </span>
         </div>
       </div>

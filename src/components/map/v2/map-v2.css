@@ -1,0 +1,978 @@
+/* Leaflet DivIcon wrappers are given the base class; strip Leaflet defaults. */
+.v2-lake-icon-wrapper,
+.v2-village-icon-wrapper {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* ---------------- Lake icon ---------------- */
+
+.v2-lake-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.v2-lake-danger {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(0, 212, 255, 0.55);
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.12) inset;
+  opacity: 0.9;
+}
+
+.v2-lake-glow {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 212, 255, 0.75) 0%,
+    rgba(0, 212, 255, 0.25) 45%,
+    rgba(0, 212, 255, 0) 80%
+  );
+  filter: blur(2px);
+  animation: v2-breathing-glow 4s ease-in-out infinite;
+}
+
+.v2-lake-core {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e6faff;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.9);
+}
+
+.v2-lake-dam {
+  position: absolute;
+  width: 3px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.35));
+  top: calc(50% - 22px);
+  left: calc(50% - 1.5px);
+  transform: rotate(45deg);
+  transform-origin: center bottom;
+  border-radius: 1px;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+
+.v2-lake-label {
+  position: absolute;
+  top: calc(50% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #e6faff;
+  background: rgba(12, 12, 29, 0.75);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: 4px;
+  padding: 2px 6px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+.v2-lake-name {
+  color: #f8fafc;
+}
+
+.v2-lake-vol {
+  color: #00d4ff;
+  font-weight: 700;
+}
+
+@keyframes v2-breathing-glow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+}
+
+/* ---------------- Village icon ---------------- */
+
+.v2-village-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v2-village-halo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(6px);
+}
+
+.v2-village-core {
+  position: relative;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  transition: transform 0.2s ease-out;
+}
+
+.v2-village-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- State: warning — strobing outline + INCOMING badge ---- */
+.v2-village-icon[data-state="warning"] .v2-village-ring {
+  opacity: 0.95;
+  animation: v2-village-strobe 150ms ease-in-out infinite;
+}
+
+.v2-village-icon[data-state="warning"] .v2-village-halo {
+  animation: v2-village-halo-pulse 0.6s ease-out infinite;
+}
+
+.v2-village-badge {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #fff;
+  background: rgba(220, 38, 38, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 3px;
+  padding: 2px 6px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  animation: v2-village-badge-in 0.35s ease-out;
+}
+
+/* ---- State: impact — one-shot scale punch + ring burst ---- */
+.v2-village-icon[data-state="impact"] .v2-village-core {
+  animation: v2-village-impact 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.v2-village-icon[data-state="impact"] .v2-village-ring {
+  opacity: 0;
+  animation: v2-village-impact-ring 0.8s ease-out;
+}
+
+.v2-village-icon[data-state="impact"] .v2-village-halo {
+  animation: v2-village-halo-flash 0.8s ease-out;
+}
+
+/* ---- State: revealed — sustain full saturation ---- */
+.v2-village-icon[data-state="revealed"] .v2-village-halo {
+  opacity: 0.35 !important;
+  filter: blur(8px);
+}
+
+.v2-village-icon[data-state="revealed"] .v2-village-core {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 14px rgba(255, 255, 255, 0.45),
+    0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes v2-village-strobe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.25;
+  }
+}
+
+@keyframes v2-village-halo-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes v2-village-badge-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes v2-village-impact {
+  0% {
+    transform: scale(0.95);
+  }
+  35% {
+    transform: scale(1.4);
+  }
+  70% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes v2-village-impact-ring {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+@keyframes v2-village-halo-flash {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+}
+
+/* ---------------- Info plate ---------------- */
+
+.v2-info-plate {
+  width: 240px;
+  pointer-events: none;
+  background: rgba(12, 12, 29, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left-width: 3px;
+  border-radius: 8px;
+  padding: 10px 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #f8fafc;
+  z-index: 700;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  animation: v2-info-plate-in 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: left center;
+}
+
+.v2-info-plate[data-flipped="true"] {
+  border-left-width: 1px;
+  border-right-width: 3px;
+  transform-origin: right center;
+  animation-name: v2-info-plate-in-flipped;
+}
+
+.v2-info-plate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.v2-info-plate-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #f8fafc;
+}
+
+.v2-info-plate-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.v2-info-plate-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.v2-info-plate-label {
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.v2-info-plate-value {
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-info-plate-unit {
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+@keyframes v2-info-plate-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes v2-info-plate-in-flipped {
+  0% {
+    opacity: 0;
+    transform: translateX(12px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ---------------- Control panel ---------------- */
+
+.v2-control-panel {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 800;
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(12, 12, 29, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+.v2-control-button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #f8fafc;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.v2-control-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.v2-control-button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.v2-control-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.v2-control-button-primary {
+  background: rgba(0, 212, 255, 0.18);
+  color: #00d4ff;
+  box-shadow: inset 0 0 0 1px rgba(0, 212, 255, 0.45);
+}
+
+.v2-control-button-primary:hover:not(:disabled) {
+  background: rgba(0, 212, 255, 0.28);
+}
+
+/* ---------------- HUD overlay ---------------- */
+
+.v2-hud-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 150px; /* leaves space for the control panel at top-right */
+  z-index: 780;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(12, 12, 29, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid rgba(148, 163, 184, 0.45);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: border-top-color 0.35s ease;
+  justify-content: center;
+  min-width: 0;
+}
+
+.v2-hud-label {
+  color: #f8fafc;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.v2-hud-value {
+  color: #e6faff;
+  font-weight: 700;
+}
+
+.v2-hud-muted {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.v2-hud-sep {
+  color: #475569;
+  font-weight: 400;
+}
+
+.v2-hud-unit {
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.v2-hud-timer,
+.v2-hud-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+/* ---- Phase tinting via top-border accent + text shift ---- */
+
+.v2-hud-overlay[data-phase="idle"] {
+  border-top-color: rgba(0, 212, 255, 0.55);
+}
+
+.v2-hud-overlay[data-phase="charge"] {
+  border-top-color: rgba(34, 197, 94, 0.75);
+}
+.v2-hud-overlay[data-phase="charge"] .v2-hud-label {
+  color: #22c55e;
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.45);
+}
+
+.v2-hud-overlay[data-phase="breach"] {
+  border-top-color: rgba(239, 68, 68, 0.9);
+  animation: v2-hud-breach-flash 0.6s ease-out;
+}
+.v2-hud-overlay[data-phase="breach"] .v2-hud-label {
+  color: #ef4444;
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+}
+
+.v2-hud-overlay[data-phase="wave"] {
+  border-top-color: rgba(249, 115, 22, 0.85);
+}
+.v2-hud-overlay[data-phase="wave"] .v2-hud-timer {
+  color: #f97316;
+  text-shadow: 0 0 8px rgba(249, 115, 22, 0.35);
+}
+
+.v2-hud-overlay[data-phase="aftermath"] {
+  border-top-color: rgba(220, 38, 38, 0.9);
+}
+.v2-hud-overlay[data-phase="aftermath"] .v2-hud-label {
+  color: #fca5a5;
+}
+
+@keyframes v2-hud-breach-flash {
+  0% {
+    background: rgba(239, 68, 68, 0.65);
+    box-shadow: 0 0 32px rgba(239, 68, 68, 0.55), 0 8px 28px rgba(0, 0, 0, 0.5);
+  }
+  100% {
+    background: rgba(12, 12, 29, 0.82);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ---------------- Village callout panel ---------------- */
+
+/*
+ * Right-side panel holding per-village impact cards. Replaces the old
+ * Leaflet-anchored VillageInfoPlate so cards can never overlap when
+ * villages cluster. Cards appear in distance order as the wave reveals
+ * each village.
+ */
+.v2-callout-panel {
+  position: absolute;
+  top: 58px;
+  right: 14px;
+  bottom: 14px;
+  width: 260px;
+  z-index: 790;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  pointer-events: auto;
+}
+
+.v2-callout-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.v2-callout-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.v2-callout-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+}
+
+.v2-callout-card {
+  flex-shrink: 0;
+  background: rgba(12, 12, 29, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #f8fafc;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: v2-callout-card-in 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: right center;
+}
+
+.v2-callout-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.v2-callout-card-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #f8fafc;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v2-callout-card-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.v2-callout-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+}
+
+.v2-callout-card-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.v2-callout-card-label {
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 8.5px;
+  font-weight: 600;
+}
+
+.v2-callout-card-value {
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v2-callout-card-unit {
+  color: #94a3b8;
+  font-size: 9px;
+  font-weight: 500;
+  margin-left: 1px;
+}
+
+@keyframes v2-callout-card-in {
+  0% {
+    opacity: 0;
+    transform: translateX(18px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ---------------- Compact preview mode ---------------- */
+
+/*
+ * Applied to the outer map frame when FloodMapV2 is rendered in compact
+ * mode (inline dashboard preview). All Leaflet interactions are disabled
+ * in compact mode so the entire frame is a safe click target that opens
+ * the expanded modal.
+ */
+.v2-compact-wrapper {
+  cursor: pointer;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.v2-compact-wrapper .leaflet-container {
+  cursor: pointer !important;
+}
+
+.v2-compact-wrapper:hover {
+  border-color: rgba(0, 212, 255, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.35),
+    0 14px 40px -12px rgba(0, 212, 255, 0.28),
+    0 0 42px -18px rgba(0, 212, 255, 0.55);
+}
+
+.v2-compact-wrapper:focus-visible {
+  outline: none;
+  border-color: rgba(0, 212, 255, 0.75);
+  box-shadow:
+    0 0 0 2px rgba(0, 212, 255, 0.5),
+    0 0 32px -10px rgba(0, 212, 255, 0.6);
+}
+
+.v2-expand-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 820;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(12, 12, 29, 0.78);
+  color: #e6faff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.45),
+    0 0 18px -6px rgba(0, 212, 255, 0.55);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.v2-expand-button:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: rgba(0, 212, 255, 0.65);
+  transform: translateY(-1px);
+}
+
+.v2-expand-button:active {
+  transform: translateY(0);
+}
+
+.v2-expand-icon {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 1;
+  color: #00d4ff;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.75);
+}
+
+.v2-compact-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%) translateY(8px);
+  z-index: 810;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(12, 12, 29, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #e6faff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+}
+
+.v2-compact-wrapper:hover .v2-compact-hint,
+.v2-compact-wrapper:focus-visible .v2-compact-hint {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------------- Flood map modal ---------------- */
+
+.v2-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vh 4vw;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.v2-modal-dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(92vw, 1400px);
+  height: min(88vh, 900px);
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(9, 9, 11, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 30px 80px -20px rgba(0, 0, 0, 0.85),
+    0 0 60px -24px rgba(0, 212, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+}
+
+.v2-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.v2-modal-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.v2-modal-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fafafa;
+  line-height: 1.2;
+}
+
+.v2-modal-subtitle {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.v2-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.v2-modal-close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #fafafa;
+}
+
+.v2-modal-close:focus-visible {
+  outline: none;
+  border-color: rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.25);
+}
+
+.v2-modal-body {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+}
+
+/* ---------------- Leaflet popup override ---------------- */
+
+/*
+ * Replace Leaflet's default white popup with the app's dark glass look.
+ * Values mirror `.v2-callout-card` above so the popup reads as "same
+ * family, smaller cousin." Scoped to `.v2-map-frame` — a class we attach
+ * to FloodMapV2's outer frame — so any other Leaflet map in the app is
+ * unaffected. react-leaflet v5's `<Popup className>` prop does not
+ * reliably propagate in this version, so ancestor scoping is what we use.
+ */
+.v2-map-frame .leaflet-popup-content-wrapper {
+  background: rgba(12, 12, 29, 0.82);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0;
+}
+
+.v2-map-frame .leaflet-popup-content {
+  margin: 9px 13px;
+  color: #f8fafc;
+  font-family: inherit;
+  line-height: 1.35;
+  max-width: 220px;
+}
+
+/*
+ * Kill the close X reliably. The react-leaflet v5 `closeButton={false}`
+ * prop does not propagate in this version, so belt-and-suspenders: hide
+ * via CSS inside our scope.
+ */
+.v2-map-frame .leaflet-popup-close-button {
+  display: none !important;
+}
+
+/*
+ * Leaflet's tip is a rotated square — applying a full border to it
+ * produces visible seams along the two edges that touch the wrapper.
+ * Solid fill, no border, lets the wrapper's edge carry the silhouette.
+ */
+.v2-map-frame .leaflet-popup-tip {
+  background: rgba(12, 12, 29, 0.82);
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.v2-map-frame .leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+
+.v2-popup-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: 0.01em;
+}
+
+.v2-popup-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.v2-popup-stats {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 11px;
+  color: #cbd5e1;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-popup-sev {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.v2-popup-pop {
+  color: #cbd5e1;
+}
+
+/* ---------------- Hillshade blend ---------------- */
+
+/*
+ * Multiplies the CartoDB dark tile layer onto the ImageOverlay hillshade
+ * below it so the labels/roads/water read on top of the terrain without
+ * losing the dark theme. Scoped so it only applies to tiles that carry
+ * the map-blend-multiply class — other Leaflet layers are untouched.
+ */
+.leaflet-tile-pane .leaflet-layer.map-blend-multiply {
+  mix-blend-mode: multiply;
+}
