@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -8,9 +9,11 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { severityConfig, type SeverityLevel } from "../../lib/severity";
-import { formatMinutes } from "../../lib/formatters";
 import type { ScenarioResult } from "../../types/scenario";
 import type { Lake } from "../../types/lake";
+import FloodMapLegend from "./FloodMapLegend";
+import VillageMarkers from "./VillageMarkers";
+import FloodPlayback from "./FloodPlayback";
 
 interface FloodMapProps {
   result: ScenarioResult;
@@ -18,6 +21,26 @@ interface FloodMapProps {
 }
 
 export default function FloodMap({ result, lake }: FloodMapProps) {
+  const [impactedNames, setImpactedNames] = useState<Set<string>>(new Set());
+
+  // Reset impacted set whenever the scenario result changes.
+  useEffect(() => {
+    setImpactedNames(new Set());
+  }, [result]);
+
+  const handleImpact = useCallback((name: string) => {
+    setImpactedNames((prev) => {
+      if (prev.has(name)) return prev;
+      const next = new Set(prev);
+      next.add(name);
+      return next;
+    });
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setImpactedNames(new Set());
+  }, []);
+
   const villageCoords = new Map(
     lake.villages.map((v) => [v.name, { lat: v.lat, lon: v.lon }])
   );
@@ -28,7 +51,7 @@ export default function FloodMap({ result, lake }: FloodMapProps) {
         Flood Impact Map
       </h3>
       <div
-        className="rounded-xl border border-border overflow-hidden"
+        className="relative rounded-xl border border-border overflow-hidden"
         style={{ height: 400 }}
       >
         <MapContainer
@@ -62,69 +85,47 @@ export default function FloodMap({ result, lake }: FloodMapProps) {
             </Popup>
           </CircleMarker>
 
-          {/* Village markers + lines */}
+          {/* Straight downstream-distance polylines (schematic) */}
           {result.villages.map((village) => {
             const coords = villageCoords.get(village.name);
             if (!coords?.lat || !coords?.lon) return null;
-
             const config = severityConfig[village.severity as SeverityLevel];
-            const popSize = village.population
-              ? Math.min(Math.max(6, Math.sqrt(village.population) / 2), 16)
-              : 8;
-
             return (
-              <div key={village.name}>
-                <Polyline
-                  positions={[
-                    [lake.lat, lake.lon],
-                    [coords.lat, coords.lon],
-                  ]}
-                  pathOptions={{
-                    color: config.color,
-                    weight: 1.5,
-                    opacity: 0.4,
-                    dashArray: "6 4",
-                  }}
-                />
-                <CircleMarker
-                  center={[coords.lat, coords.lon]}
-                  radius={popSize}
-                  pathOptions={{
-                    color: config.color,
-                    fillColor: config.color,
-                    fillOpacity: 0.7,
-                    weight: 2,
-                  }}
-                >
-                  <Popup>
-                    <div style={{ color: "#0c0c1d", fontSize: 12 }}>
-                      <strong>{village.name}</strong>
-                      {village.name_nepali && (
-                        <span style={{ fontWeight: 400 }}>
-                          {" "}
-                          ({village.name_nepali})
-                        </span>
-                      )}
-                      <br />
-                      Arrival:{" "}
-                      <strong>{formatMinutes(village.arrival_time_min)}</strong>
-                      <br />
-                      Severity: <strong>{village.severity}</strong>
-                      {village.population && (
-                        <>
-                          <br />
-                          Population: {village.population.toLocaleString()}
-                        </>
-                      )}
-                    </div>
-                  </Popup>
-                </CircleMarker>
-              </div>
+              <Polyline
+                key={`line-${village.name}`}
+                positions={[
+                  [lake.lat, lake.lon],
+                  [coords.lat, coords.lon],
+                ]}
+                pathOptions={{
+                  color: config.color,
+                  weight: 2.5,
+                  opacity: 0.7,
+                }}
+              />
             );
           })}
 
+          {/* Village markers with pulse on impact */}
+          <VillageMarkers
+            result={result}
+            lake={lake}
+            impactedNames={impactedNames}
+          />
+
+          {/* Playback controls + animation (uses useMap) */}
+          <FloodPlayback
+            result={result}
+            lake={lake}
+            onImpact={handleImpact}
+            onReset={handleReset}
+          />
+
           <FitBounds lake={lake} />
         </MapContainer>
+
+        {/* Legend overlay — OUTSIDE MapContainer but inside wrapper for z-index */}
+        <FloodMapLegend />
       </div>
     </div>
   );

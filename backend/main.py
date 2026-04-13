@@ -16,7 +16,7 @@ from fastapi.staticfiles import StaticFiles
 # Ensure project root is importable
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from backend.routers import scenario, lakes, chat, packs
+from backend.routers import scenario, lakes, chat, packs, explain
 
 app = FastAPI(
     title="Moraine API",
@@ -40,6 +40,41 @@ app.include_router(scenario.router)
 app.include_router(lakes.router)
 app.include_router(chat.router)
 app.include_router(packs.router)
+app.include_router(explain.router)
+
+
+@app.on_event("startup")
+async def warm_gemma_on_startup() -> None:
+    """
+    Pre-pull the Gemma model into memory so the first real click on
+    "Explain these results" doesn't hit Ollama's 10–20 second cold start.
+
+    We stream a dummy payload and discard after the first token. Any
+    failure is swallowed — the warm-up is a nicety, not a requirement.
+    The backend should still start even if Ollama is down.
+    """
+    import asyncio
+
+    def _warmup_sync() -> None:
+        try:
+            from backend.interpretation_runner import stream_ollama
+
+            gen = stream_ollama(
+                lake={"name": "warmup", "volume_m3": 1},
+                params={},
+                result={"villages": [], "discharge": {"average_m3s": 0}, "wave_speed_mps": 0},
+                language="en",
+            )
+            for _ in gen:
+                break
+        except Exception:
+            pass
+
+    try:
+        # Run the warmup in a thread so we don't block the FastAPI lifespan.
+        asyncio.create_task(asyncio.to_thread(_warmup_sync))
+    except Exception:
+        pass
 
 # ── Self-hosted pack registry (Phase 4) ───────────────────────────────────
 #
