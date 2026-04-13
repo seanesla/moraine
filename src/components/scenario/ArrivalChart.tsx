@@ -64,15 +64,27 @@ export default function ArrivalChart({ villages }: ArrivalChartProps) {
               width={100}
             />
             <Tooltip
+              isAnimationActive={false}
+              cursor={{ fill: "rgba(255,255,255,0.04)" }}
               contentStyle={{
-                backgroundColor: "#141428",
-                border: "1px solid rgba(255,255,255,0.1)",
+                backgroundColor: "rgba(17, 17, 19, 0.95)",
+                border: "1px solid rgba(255,255,255,0.08)",
                 borderRadius: 10,
+                padding: "10px 12px",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+              }}
+              labelStyle={{
+                color: "#fafafa",
                 fontSize: 12,
-                color: "#e8eaf0",
+                fontWeight: 600,
+                marginBottom: 4,
+              }}
+              itemStyle={{
+                color: "#cbd5e1",
+                fontSize: 12,
+                padding: 0,
               }}
               formatter={(value: number) => [`${value.toFixed(1)} min`, "Arrival"]}
-              cursor={{ fill: "rgba(255,255,255,0.02)" }}
             />
             <Bar dataKey="time" radius={[0, 6, 6, 0]} barSize={20}>
               {data.map((entry, i) => (
