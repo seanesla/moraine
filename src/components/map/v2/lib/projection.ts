@@ -1,5 +1,5 @@
 import type { Map as LeafletMap } from "leaflet";
-import type { LatLon } from "./curves";
+import type { LatLon } from "./arcLength";
 
 /**
  * Convert a [lat, lon] to CSS pixel coords in the map container.

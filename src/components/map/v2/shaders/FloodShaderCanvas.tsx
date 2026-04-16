@@ -3,7 +3,11 @@ import { useMap } from "react-leaflet";
 import { Renderer, Program, Mesh, Geometry, Vec2, Vec3 } from "ogl";
 import vertSrc from "./floodWave.vert.glsl?raw";
 import fragSrc from "./floodWave.frag.glsl?raw";
-import { quadraticBezierPoints, type LatLon } from "../lib/curves";
+import {
+  buildArcLengthTable,
+  interpolateAtArcLength,
+  type LatLon,
+} from "../lib/arcLength";
 import { latLngToScreen } from "../lib/projection";
 
 export interface FloodShaderHandle {
@@ -19,15 +23,18 @@ export interface FloodShaderHandle {
 
 interface FloodShaderCanvasProps {
   lakeLatLng: LatLon;
-  farthestLatLng: LatLon;
-  /** Bezier curvature + side used for RiverPaths; shader samples the same curve. */
-  curvature: number;
-  side: -1 | 1;
+  /**
+   * Pre-computed DEM-traced flow path from the lake outlet to the
+   * farthest village. The shader walks this polyline using arc-length
+   * parameterization so the wave travels at constant geographic speed
+   * regardless of how unevenly the points are sampled (real river
+   * traces have dense meanders and sparse straight reaches).
+   */
+  farthestPath: LatLon[];
   /** distance_km of the farthest village — drives the attenuation curve. */
   maxDistanceKm: number;
 }
 
-const BEZIER_STEPS = 64;
 const IMPACT_SLOTS = 8;
 const DECAY_RATE_PER_50KM = 0.3; // matches glof_core.attenuate_discharge default
 
@@ -35,26 +42,14 @@ const DECAY_RATE_PER_50KM = 0.3; // matches glof_core.attenuate_discharge defaul
  * Phase 4: imperative shader canvas. The GSAP master timeline in
  * useFloodChoreography drives progress / intensity / breach / impact via the
  * ref; this component just renders per frame and decays transient uniforms.
- *
- * Coordinate sync + WebGL context cleanup unchanged from Phase 2/3.
  */
 const FloodShaderCanvas = forwardRef<FloodShaderHandle, FloodShaderCanvasProps>(
   function FloodShaderCanvas(
-    {
-      lakeLatLng,
-      farthestLatLng,
-      curvature,
-      side,
-      maxDistanceKm,
-    },
+    { lakeLatLng, farthestPath, maxDistanceKm },
     ref,
   ) {
     const map = useMap();
 
-    // Expose these refs to the imperative handle. Each ref is a plain
-    // function that the GSAP timeline calls from onUpdate / tl.call. We
-    // install them in the RAF-driven useEffect below, which owns the
-    // shader program.
     const apiRef = useRef<FloodShaderHandle | null>(null);
 
     useImperativeHandle(
@@ -84,6 +79,7 @@ const FloodShaderCanvas = forwardRef<FloodShaderHandle, FloodShaderCanvasProps>(
     useEffect(() => {
       const container = map.getContainer();
       if (!container) return;
+      if (!farthestPath || farthestPath.length < 2) return;
 
       const canvas = document.createElement("canvas");
       canvas.style.position = "absolute";
@@ -137,13 +133,11 @@ const FloodShaderCanvas = forwardRef<FloodShaderHandle, FloodShaderCanvasProps>(
 
       const mesh = new Mesh(gl, { geometry, program });
 
-      const pathPoints: LatLon[] = quadraticBezierPoints(
-        lakeLatLng,
-        farthestLatLng,
-        curvature,
-        side,
-        BEZIER_STEPS,
-      );
+      // Precompute arc-length table so interpolateAtArcLength is O(log N)
+      // per lookup and the wave walks the real polyline at constant
+      // ground speed. Falls out of scope with the effect.
+      const arcTable = buildArcLengthTable(farthestPath);
+      const lastPoint = farthestPath[farthestPath.length - 1];
 
       const resize = () => {
         const size = map.getSize();
@@ -155,29 +149,18 @@ const FloodShaderCanvas = forwardRef<FloodShaderHandle, FloodShaderCanvasProps>(
 
       const updateTravelDir = () => {
         const [lx, ly] = latLngToScreen(map, lakeLatLng);
-        const [fx, fy] = latLngToScreen(map, farthestLatLng);
+        const [fx, fy] = latLngToScreen(map, lastPoint);
         const dx = (fx - lx) * dpr;
         const dy = (fy - ly) * dpr;
         const len = Math.hypot(dx, dy) || 1;
         program.uniforms.uTravelDirScreen.value.set(dx / len, dy / len);
       };
 
-      const curveLatLngAt = (t: number): LatLon => {
-        const clamped = Math.max(0, Math.min(1, t));
-        const idx = clamped * (pathPoints.length - 1);
-        const lo = Math.floor(idx);
-        const hi = Math.min(pathPoints.length - 1, lo + 1);
-        const f = idx - lo;
-        const [la0, lo0] = pathPoints[lo];
-        const [la1, lo1] = pathPoints[hi];
-        return [la0 + (la1 - la0) * f, lo0 + (lo1 - lo0) * f];
-      };
-
       // Progress state (owned by the shader effect, driven by setProgress).
       let progress = 0;
 
       const updateFront = () => {
-        const latLon = curveLatLngAt(progress);
+        const latLon = interpolateAtArcLength(arcTable, progress);
         const [fx, fy] = latLngToScreen(map, latLon);
         program.uniforms.uFrontPosScreen.value.set(fx * dpr, fy * dpr);
       };
@@ -290,15 +273,7 @@ const FloodShaderCanvas = forwardRef<FloodShaderHandle, FloodShaderCanvasProps>(
         loseExt?.loseContext();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-      map,
-      lakeLatLng[0],
-      lakeLatLng[1],
-      farthestLatLng[0],
-      farthestLatLng[1],
-      curvature,
-      side,
-    ]);
+    }, [map, lakeLatLng[0], lakeLatLng[1], farthestPath]);
 
     return null;
   },

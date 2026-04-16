@@ -19,9 +19,23 @@
     "Mergili, M., Schneider, D., Worni, R., Schneider, J. F. (2020). Reconstruction of the 1941 GLOF process chain at Lake Palcacocha (Cordillera Blanca, Peru). Hydrology and Earth System Sciences, 24, 93-114.",
     "Schneider, D., Huggel, C., Cochachin, A., et al. (2014). Mapping hazards from glacier lake outburst floods based on modelling of process cascades at Lake 513, Carhuaz, Peru. Advances in Geosciences, 35, 145-155.",
     "Hubbard, B., Heald, A., Reynolds, J. M., et al. (2005). Impact of a rock avalanche on a moraine-dammed proglacial lake: Laguna Safuna Alta, Cordillera Blanca, Peru. Earth Surface Processes and Landforms, 30(10), 1251-1264.",
-    "INAIGEM (2018). Inventario Nacional de Glaciares y Lagunas - Cordillera Blanca. Instituto Nacional de Investigación en Glaciares y Ecosistemas de Montaña, Huaraz, Peru.",
+    "INAIGEM (2018). Inventario Nacional de Glaciares y Lagunas - Cordillera Blanca. Instituto Nacional de Investigaci\u00f3n en Glaciares y Ecosistemas de Monta\u00f1a, Huaraz, Peru.",
     "Carey, M., Huggel, C., Bury, J., Portocarrero, C., Haeberli, W. (2012). An integrated socio-environmental framework for glacier hazard management and climate change adaptation: lessons from Lake 513, Cordillera Blanca, Peru. Climatic Change, 112, 733-767.",
     "Emmer, A., Vilimek, V. (2014). New method for assessing the susceptibility of glacial lakes to outburst floods in the Cordillera Blanca, Peru. Hydrology and Earth System Sciences, 18, 3461-3479.",
     "Frey, H., Huggel, C., Chisolm, R. E., et al. (2018). Multi-source glacial lake outburst flood hazard assessment and mapping for Huaraz, Cordillera Blanca, Peru. Frontiers in Earth Science, 6, 210."
-  ]
+  ],
+  "spatial": {
+    "rivers": {
+      "file": "rivers.geojson",
+      "feature_count": 9,
+      "size_bytes": 299754,
+      "sha256": "80ace4dc1aabbe31c184674b40db09770d6b1216624c40d4fe78bbb6ed534fac",
+      "source": "dem_d8_flow_tracing",
+      "rdp_tolerance_m": 30.0,
+      "catmull_samples_per_segment": 5,
+      "proximity_m_primary": 500.0,
+      "proximity_m_fallback": 1000.0,
+      "built_at": "2026-04-13T07:30:03+00:00"
+    }
+  }
 }

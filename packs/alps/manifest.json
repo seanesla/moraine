@@ -23,5 +23,19 @@
     "Mottet, G. (1962). Les laves torrentielles de la Marjelen (Suisse). Revue de geographie alpine, 50(1), 105-117. (Marjelensee 19th-century outbursts)",
     "GLAMOS (2023). Swiss Glacier Monitoring Network annual reports. Glaciological Reports of the Cryospheric Commission of the Swiss Academy of Sciences.",
     "Frey, H., Haeberli, W., Linsbauer, A., Huggel, C., Paul, F. (2010). A multi-level strategy for anticipating future glacier lake formation and associated hazard potentials. Natural Hazards and Earth System Sciences, 10, 339-352."
-  ]
+  ],
+  "spatial": {
+    "rivers": {
+      "file": "rivers.geojson",
+      "feature_count": 5,
+      "size_bytes": 70603,
+      "sha256": "075ef5301c51307713d3da9655e1c1fa78bdc352327eabf25651758ed46ed5ef",
+      "source": "dem_d8_flow_tracing",
+      "rdp_tolerance_m": 30.0,
+      "catmull_samples_per_segment": 5,
+      "proximity_m_primary": 500.0,
+      "proximity_m_fallback": 1000.0,
+      "built_at": "2026-04-13T07:27:01+00:00"
+    }
+  }
 }

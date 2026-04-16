@@ -207,6 +207,94 @@ def discover_packs() -> list[Pack]:
     return packs
 
 
+def _load_river_paths(pack_dir: Path) -> dict[tuple[str, str], list[list[float]]]:
+    """
+    Read packs/<id>/rivers.geojson and build an index mapping
+    (lake_id, village_name) → list of [lat, lon] pairs. Flips the
+    GeoJSON [lon, lat] ordering to Leaflet's [lat, lon] here at the
+    source boundary so downstream code never has to think about it.
+
+    Returns an empty dict if the file is missing or malformed — packs
+    shipped before the flow-tracing build script simply won't have
+    river paths, and the frontend falls back to rendering nothing for
+    the polyline (the lake + village markers + flood shader still work).
+
+    Bad or unrecognized features are dropped with a log.warning so
+    regressions in the build script are visible (vs. the previous
+    silent-drop behavior).
+    """
+    import math
+
+    rivers_path = pack_dir / "rivers.geojson"
+    if not rivers_path.is_file():
+        return {}
+    try:
+        with open(rivers_path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        log.warning("Failed to read %s: %s", rivers_path, e)
+        return {}
+    features = data.get("features")
+    if not isinstance(features, list):
+        log.warning("%s has no 'features' list", rivers_path)
+        return {}
+
+    index: dict[tuple[str, str], list[list[float]]] = {}
+    dropped = 0
+    for feat in features:
+        if not isinstance(feat, dict):
+            dropped += 1
+            continue
+        props = feat.get("properties") or {}
+        geom = feat.get("geometry") or {}
+        if geom.get("type") != "LineString":
+            log.warning(
+                "%s: skipping non-LineString feature (type=%r)",
+                rivers_path,
+                geom.get("type"),
+            )
+            dropped += 1
+            continue
+        lake_id = props.get("lake_id")
+        village_name = props.get("village_name")
+        coords = geom.get("coordinates")
+        if not (isinstance(lake_id, str) and isinstance(village_name, str)):
+            dropped += 1
+            continue
+        if not isinstance(coords, list):
+            dropped += 1
+            continue
+        latlon: list[list[float]] = []
+        for pair in coords:
+            if not (
+                isinstance(pair, list)
+                and len(pair) >= 2
+                and isinstance(pair[0], (int, float))
+                and not isinstance(pair[0], bool)
+                and isinstance(pair[1], (int, float))
+                and not isinstance(pair[1], bool)
+                and math.isfinite(pair[0])
+                and math.isfinite(pair[1])
+            ):
+                continue
+            # GeoJSON is [lon, lat]; Leaflet uses [lat, lon].
+            latlon.append([float(pair[1]), float(pair[0])])
+        if len(latlon) >= 2:
+            index[(lake_id, village_name)] = latlon
+        else:
+            log.warning(
+                "%s: dropping %s -> %s (only %d valid coord pair(s))",
+                rivers_path,
+                lake_id,
+                village_name,
+                len(latlon),
+            )
+            dropped += 1
+    if dropped:
+        log.info("%s: dropped %d malformed feature(s)", rivers_path, dropped)
+    return index
+
+
 def load_lakes_from_packs(packs: list[Pack]) -> list[dict]:
     """
     Load `lakes.json` from each pack and return one flat list of lake
@@ -216,12 +304,20 @@ def load_lakes_from_packs(packs: list[Pack]) -> list[dict]:
     declares `pack_id` as an optional field so it flows straight
     through `/api/lakes` to the client.
 
+    If the pack has a rivers.geojson file (produced by
+    scripts/build_pack_rivers.py), we read it and attach each village's
+    pre-baked flow-tracing polyline to the matching LakeVillage's
+    `river_path` field. Villages without a match are left with
+    river_path = None — the frontend falls back to skipping the
+    polyline for that village (no fake Bezier "river" ever again).
+
     Errors in an individual pack's lakes.json are logged and skipped —
     we don't want one bad pack to take down the whole app.
     """
     all_lakes: list[dict] = []
     for pack in packs:
-        lakes_path = Path(pack.path) / "lakes.json"
+        pack_dir = Path(pack.path)
+        lakes_path = pack_dir / "lakes.json"
         if not lakes_path.is_file():
             log.warning(
                 "Pack %s has no lakes.json at %s — skipping",
@@ -247,13 +343,32 @@ def load_lakes_from_packs(packs: list[Pack]) -> list[dict]:
                 pack.manifest.id,
             )
             continue
+
+        river_index = _load_river_paths(pack_dir)
+
         for lake in lakes:
             if not isinstance(lake, dict):
                 continue
-            # Tag the lake with its source pack id. The Lake schema
-            # exposes this as a public field so the frontend can filter
-            # by active region without an extra round-trip.
             lake["pack_id"] = pack.manifest.id
+            lake_id = lake.get("id")
+            if not isinstance(lake_id, str):
+                # Lake without a valid string id will be rejected by the
+                # Pydantic schema downstream; no point trying to attach
+                # river paths. Skip the river_path attachment but still
+                # append the lake so the normal rejection path runs.
+                all_lakes.append(lake)
+                continue
+            villages = lake.get("villages")
+            if isinstance(villages, list):
+                for village in villages:
+                    if not isinstance(village, dict):
+                        continue
+                    village_name = village.get("name")
+                    if not isinstance(village_name, str):
+                        continue
+                    path = river_index.get((lake_id, village_name))
+                    if path is not None:
+                        village["river_path"] = path
             all_lakes.append(lake)
     return all_lakes
 

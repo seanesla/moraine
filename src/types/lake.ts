@@ -6,6 +6,14 @@ export interface Village {
   population?: number;
   lat?: number;
   lon?: number;
+  /**
+   * Real river/flow path from the lake outlet to this village, traced
+   * from DEM flow direction by scripts/build_pack_rivers.py and served
+   * via /api/lakes. Each entry is [lat, lon] in Leaflet order. Absent
+   * when the pack hasn't been built with rivers.geojson yet, or when
+   * the village could not be matched to the lake's downhill walk.
+   */
+  river_path?: [number, number][];
 }
 
 export interface Lake {

@@ -26,5 +26,19 @@
     "GLOFCA (2022). Atlas of Glacial Lakes of Tajikistan. https://glofca.org/",
     "Yafyazova, R. (2007). Mudflow hazard in the foothills of Northern Tien Shan: 1963 Issyk disaster reassessment.",
     "USGS (2007). Usoi Landslide Dam and Lake Sarez - An assessment of hazard and risk in the Pamir Mountains, Tajikistan. UNDRR/USGS Joint Assessment Report."
-  ]
+  ],
+  "spatial": {
+    "rivers": {
+      "file": "rivers.geojson",
+      "feature_count": 2,
+      "size_bytes": 213319,
+      "sha256": "54a7fcab198fcb242f202e8f3487098537ae5fa2379f15fd476f978bbc862db1",
+      "source": "dem_d8_flow_tracing",
+      "rdp_tolerance_m": 30.0,
+      "catmull_samples_per_segment": 5,
+      "proximity_m_primary": 500.0,
+      "proximity_m_fallback": 1000.0,
+      "built_at": "2026-04-13T07:31:08+00:00"
+    }
+  }
 }

@@ -26,5 +26,19 @@
     "Sattar, A., Goswami, A., et al. (2024). Reconstruction of the 2023 South Lhonak Lake outburst flood and modelling future scenarios. Natural Hazards.",
     "NCHM Bhutan (2019). Reassessment of Potentially Dangerous Glacial Lakes in Bhutan.",
     "Khanal, N. R., Hu, J. M., Mool, P. (2015). Glacial lake outburst flood risk in the Poiqu/Bhote Koshi/Sun Koshi river basin in the central Himalayas. Mountain Research and Development."
-  ]
+  ],
+  "spatial": {
+    "rivers": {
+      "file": "rivers.geojson",
+      "feature_count": 16,
+      "size_bytes": 1078041,
+      "sha256": "5be0a20469bdacab3e5ff8c6b2adaddf44117406705d5ea40c31cffc7193fced",
+      "source": "dem_d8_flow_tracing",
+      "rdp_tolerance_m": 30.0,
+      "catmull_samples_per_segment": 5,
+      "proximity_m_primary": 500.0,
+      "proximity_m_fallback": 1000.0,
+      "built_at": "2026-04-13T07:29:11+00:00"
+    }
+  }
 }

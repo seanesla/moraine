@@ -21,7 +21,7 @@ import {
   type HudState,
   type VillageState,
 } from "./useFloodChoreography";
-import type { LatLon } from "./lib/curves";
+import type { LatLon } from "./lib/arcLength";
 
 interface FloodMapV2Props {
   result: ScenarioResult;
@@ -29,8 +29,6 @@ interface FloodMapV2Props {
   mode?: "compact" | "expanded";
   onExpandClick?: () => void;
 }
-
-const CURVATURE = 0.22;
 
 const INITIAL_HUD: HudState = {
   phase: "idle",
@@ -81,31 +79,40 @@ export default function FloodMapV2({
     }
   }, [lake]);
 
-  // Farthest village that has coordinates. RiverPaths derives each village's
-  // curve `side` from its index in result.villages — we must use the same
-  // index here so the shader dot rides the exact Bezier RiverPaths drew.
+  // Farthest village that has a real DEM-traced river_path. The shader
+  // walks this polyline at constant ground speed (arc-length parameter-
+  // ization), so the wave reaches each upstream village at the right
+  // model time. If no village has a path we render nothing for the
+  // shader — the lake markers and HUD still work.
   const farthest = useMemo<
-    { latLng: LatLon; side: -1 | 1; distanceKm: number } | null
+    { path: LatLon[]; distanceKm: number } | null
   >(() => {
-    let best: { latLng: LatLon; side: -1 | 1; distanceKm: number } | null =
-      null;
+    const villageByName = new Map(lake.villages.map((v) => [v.name, v]));
+    let best: { path: LatLon[]; distanceKm: number } | null = null;
     let bestDist = -1;
-    result.villages.forEach((v, index) => {
-      const coords = villageCoords.get(v.name);
-      if (!coords?.lat || !coords?.lon) return;
+    for (const v of result.villages) {
+      const lakeVillage = villageByName.get(v.name);
+      const path = lakeVillage?.river_path;
+      if (!path || path.length < 2) continue;
       if (v.distance_km > bestDist) {
         bestDist = v.distance_km;
         best = {
-          latLng: [coords.lat, coords.lon] as LatLon,
-          side: (index % 2 === 0 ? 1 : -1) as -1 | 1,
+          path: path as LatLon[],
           distanceKm: v.distance_km,
         };
       }
-    });
+    }
     return best;
-  }, [result, villageCoords]);
+  }, [result, lake]);
 
-  const lakeLatLng: LatLon = [lake.lat, lake.lon];
+  // Memoized so the FloodShaderCanvas doesn't see a new array reference
+  // every parent re-render. The effect deps still use the primitive
+  // components, but the prop closure inside `syncPositions` now captures
+  // a stable reference.
+  const lakeLatLng = useMemo<LatLon>(
+    () => [lake.lat, lake.lon],
+    [lake.lat, lake.lon],
+  );
 
   // Wide-framing bounds for the aftermath camera move. Same math as the
   // one-shot FitBounds below — computed once per lake.
@@ -219,9 +226,7 @@ export default function FloodMapV2({
             <FloodShaderCanvas
               ref={shaderHandleRef}
               lakeLatLng={lakeLatLng}
-              farthestLatLng={farthest.latLng}
-              curvature={CURVATURE}
-              side={farthest.side}
+              farthestPath={farthest.path}
               maxDistanceKm={farthest.distanceKm}
             />
           )}

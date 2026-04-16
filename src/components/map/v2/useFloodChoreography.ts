@@ -4,7 +4,7 @@ import type { ScenarioResult } from "../../../types/scenario";
 import type { Lake } from "../../../types/lake";
 import { computePlaybackTiming, type TimingPlan } from "./lib/timing";
 import type { FloodShaderHandle } from "./shaders/FloodShaderCanvas";
-import type { LatLon } from "./lib/curves";
+import type { LatLon } from "./lib/arcLength";
 
 export type VillageState = "idle" | "warning" | "impact" | "revealed";
 export type PlaybackPhase = "idle" | "charge" | "breach" | "wave" | "aftermath";
@@ -192,7 +192,7 @@ export function useFloodChoreography(
     tl.call(
       () => {
         refs.hudStateRef.current.phase = "aftermath";
-        refs.shaderHandleRef.current?.setIntensity(0.4);
+        refs.shaderHandleRef.current?.setIntensity(0.15);
         refs.hudStateRef.current.modelTimeSec = timing.modelSeconds;
         bump();
       },

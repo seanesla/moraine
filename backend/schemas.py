@@ -61,6 +61,15 @@ class LakeVillage(BaseModel):
     population: int | None = None
     lat: float | None = None
     lon: float | None = None
+    # Real river path from lake outlet to the village, traced from DEM
+    # flow direction by scripts/build_pack_rivers.py. Each entry is
+    # [lat, lon] in Leaflet's order (NOT GeoJSON [lon, lat] — we flip
+    # at the boundary when reading the source GeoJSON). Optional so
+    # packs without a pre-baked rivers.geojson still load. Typed as a
+    # tuple of (lat, lon) so Pydantic rejects arrays with 1 or 3+
+    # elements at the validation boundary — a loose list[list[float]]
+    # would let malformed data sneak through to the frontend.
+    river_path: list[tuple[float, float]] | None = None
 
 
 class Lake(BaseModel):

@@ -80,42 +80,15 @@ export default function FloodMapLegend() {
         </div>
       </div>
 
-      {/* Schematic disclaimer */}
+      {/* Data attribution */}
       <div className="border-t border-white/8 mt-2 pt-2">
-        <div className="flex items-start gap-2">
-          <span
-            aria-hidden
-            className="shrink-0 mt-[2px]"
-            style={{
-              display: "inline-block",
-              width: 14,
-              height: 2,
-              background:
-                "linear-gradient(to right, rgba(148,163,184,0.2), #94a3b8)",
-              position: "relative",
-            }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                right: -1,
-                top: -2,
-                width: 0,
-                height: 0,
-                borderLeft: "5px solid #94a3b8",
-                borderTop: "3px solid transparent",
-                borderBottom: "3px solid transparent",
-              }}
-            />
-          </span>
-          <span className="text-[9.5px] text-text-muted leading-snug italic">
-            Stylized{" "}
-            <span className="text-text-secondary font-semibold not-italic">
-              river paths
-            </span>{" "}
-            — actual valleys may differ.
-          </span>
-        </div>
+        <span className="text-[9.5px] text-text-muted leading-snug">
+          River paths traced from real{" "}
+          <span className="text-text-secondary font-semibold">
+            elevation data
+          </span>{" "}
+          (Mapzen Terrain Tiles, AWS Open Data).
+        </span>
       </div>
     </div>
   );

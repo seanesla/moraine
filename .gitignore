@@ -9,6 +9,7 @@ build/
 CLAUDE.md
 gemmahackathonrules.md
 data/tiles/
+.cache/
 
 # Node / Frontend
 node_modules/
